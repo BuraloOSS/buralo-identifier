@@ -24,7 +24,13 @@
 
     <groupId>com.buralo</groupId>
     <artifactId>buralo-identifier</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <name>Buralo Identifier</name>
+
+    <description>
+        Generate domain object identifiers from UUIDs that are globally unique and sortable in their binary and textual representation.
+    </description>
 
     <inceptionYear>2022 </inceptionYear>
 
