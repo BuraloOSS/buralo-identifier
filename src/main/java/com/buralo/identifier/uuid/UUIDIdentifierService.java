@@ -1,3 +1,19 @@
+/*
+ *  Copyright 2022 Búraló Technologies
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
 package com.buralo.identifier.uuid;
 
 import com.buralo.identifier.api.Identifier;
@@ -85,7 +101,7 @@ public final class UUIDIdentifierService implements IdentifierService {
             throw new IllegalArgumentException("invalid text representation of identifier");
         }
         final var binary = decode(text);
-        return new Identifier(text, binary);
+        return new UUIDIdentifier(text, binary);
     }
 
     /**
@@ -100,7 +116,7 @@ public final class UUIDIdentifierService implements IdentifierService {
             throw new IllegalArgumentException("invalid binary representation of identifier");
         }
         final var text = encode(binary);
-        return new Identifier(text, binary);
+        return new UUIDIdentifier(text, binary);
     }
 
     /**
