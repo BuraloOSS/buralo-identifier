@@ -1,0 +1,63 @@
+= Buralo Identifier
+
+== Overview
+
+Generate domain object identifiers from UUIDs that are globally unique and sortable in their binary and textual representation.
+
+== Java Compatibility
+
+This library was created using Java 17.
+
+== Usage
+
+* Add the following dependency to your *pom.xml*:
++
+[source,xml]
+----
+<dependency>
+    <groupId>com.buralo</groupId>
+    <artifactId>buralo-identifier</artifactId>
+    <version>1.0.0</version>
+</dependency>
+----
+
+* Instantiate `UUIDIdentifierService` which implements the `IdenterifierService`:
++
+[source,java]
+----
+private final IdentifierService identifierService = new UUIDIdentifierService();
+----
+
+* Generate an identifier:
++
+[source,java]
+----
+var id = identifierService.generate();
+----
+
+* `id` is a record of type `UUIDIdentifier` which implements the `Identifier` interface.
+
+* `id.binary()` returns a `byte[16]` arrary that con be stored in a `BINARY(16)` column in the database.
++
+[source,java]
+----
+PreparedStatement ps = /* ... */;
+ps.setBytes(1, id.binary())
+----
+
+* `id.text()` returns a 22 character URL-safe string that can be used in RESTful APIs as part of the URI path or in request/response payloads.
+
+* If you read `byte[16]` from a `BINARY(16)` database column use the `fromBinary()` method to convert it to an `Identifier`:
++
+[source,java]
+----
+ResultSet rs = /* ... */;
+var bytes = rs.getBytes(1);
+var id = identifierService.fromBinary(bytes);
+----
+
+* To convert a `String` passed via request URI or payload you can use `identifierService.fromText(idStr)`.
+
+== License & Source Code
+
+The **Buralo Identifier** is made available under the http://www.apache.org/licenses/LICENSE-2.0.html[Apache License] and the source code is hosted on http://github.com[GitHub] at https://github.com/BuraloOSS/buralo-identiifer.
