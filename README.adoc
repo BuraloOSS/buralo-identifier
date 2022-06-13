@@ -47,7 +47,7 @@ ps.setBytes(1, id.binary())
 
 * `id.text()` returns a 22 character URL-safe string that can be used in RESTful APIs as part of the URI path or in request/response payloads.
 
-* If you read `byte[16]` from a `BINARY(16)` database column use the `fromBinary()` method to convert it to an `Identifier`:
+* If you read `byte[16]` from a `BINARY(16)` database column use the `identifierService.fromBinary(bytes)` method to convert it to an `Identifier`:
 +
 [source,java]
 ----
@@ -56,7 +56,7 @@ var bytes = rs.getBytes(1);
 var id = identifierService.fromBinary(bytes);
 ----
 
-* To convert a `String` passed via request URI or payload you can use `identifierService.fromText(idStr)`.
+* To convert a `String` passed via request URI or payload you can use the `identifierService.fromText(idStr)` method.
 
 == License & Source Code
 
