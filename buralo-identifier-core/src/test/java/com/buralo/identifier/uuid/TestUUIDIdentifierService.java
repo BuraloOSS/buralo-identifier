@@ -16,7 +16,6 @@
  */
 package com.buralo.identifier.uuid;
 
-import com.buralo.identifier.api.Identifier;
 import com.buralo.identifier.api.IdentifierService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

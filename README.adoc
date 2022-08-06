@@ -8,7 +8,7 @@ Generate domain object identifiers from UUIDs that are globally unique and sorta
 
 This library was created using Java 17.
 
-== Usage
+== Getting Started without Spring Boot
 
 * Add the following dependency to your *pom.xml*:
 +
@@ -16,8 +16,8 @@ This library was created using Java 17.
 ----
 <dependency>
     <groupId>com.buralo</groupId>
-    <artifactId>buralo-identifier</artifactId>
-    <version>1.0.0</version>
+    <artifactId>buralo-identifier-core</artifactId>
+    <version>1.1.0</version>
 </dependency>
 ----
 
@@ -27,6 +27,40 @@ This library was created using Java 17.
 ----
 private final IdentifierService identifierService = new UUIDIdentifierService();
 ----
+
+== Spring Boot Usage
+
+* Add the following dependencies to your *pom.xml*:
++
+[source,xml]
+----
+<dependency>
+    <groupId>com.buralo</groupId>
+    <artifactId>buralo-identifier-core</artifactId>
+    <version>1.1.0</version>
+</dependency>
+----
++
+[source,xml]
+----
+<dependency>
+    <groupId>com.buralo</groupId>
+    <artifactId>buralo-identifier-spring</artifactId>
+    <version>1.1.0</version>
+</dependency>
+----
+
+* The `buralo-identifier-spring` contains auto-configuration that exports an `IdenifierService` and `IdentifierConverter` bean. The `IdentifierConverter` bean allows conversion from the string r
+
+* Auto-wire the `IdentifierService` bean:
++
+[source,java]
+----
+@Autowired
+private IdentifierService identifierService;
+----
+
+== Using the IdentifierService
 
 * Generate an identifier:
 +
