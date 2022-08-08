@@ -64,4 +64,14 @@ public record UUIDIdentifier(String text, byte[] binary) implements Identifier {
     public int compareTo(final Identifier other) {
         return Arrays.compare(binary, other.binary());
     }
+
+    /**
+     * Get a string representation.
+     *
+     * @return The string representation.
+     */
+    @Override
+    public String toString() {
+        return text;
+    }
 }
