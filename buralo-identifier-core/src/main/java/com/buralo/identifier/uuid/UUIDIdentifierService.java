@@ -328,7 +328,7 @@ public final class UUIDIdentifierService implements IdentifierService {
      */
     @Override
     public Identifier asLowerBound(final Temporal time) {
-        return fromTicks(toTicks(time), 0x8000000000000000L);
+        return fromTicks(toTicks(time, false), 0x8000000000000000L);
     }
 
     /**
@@ -342,7 +342,7 @@ public final class UUIDIdentifierService implements IdentifierService {
      */
     @Override
     public Identifier asUpperBound(final Temporal time) {
-        return fromTicks(toTicks(time) + TICKS_PER_SECOND - 1, 0x8FFFFFFFFFFFFFFFL);
+        return fromTicks(toTicks(time, true), 0x8FFFFFFFFFFFFFFFL);
     }
 
     private Identifier fromTicks(final long ticks, final long suffix) {
@@ -363,17 +363,23 @@ public final class UUIDIdentifierService implements IdentifierService {
      * @return The number of ticks.
      * @throws IllegalArgumentException If the temporal type is not supported.
      */
-    private long toTicks(final Temporal temporal) {
+    private long toTicks(final Temporal temporal, final boolean upper) {
         if (temporal instanceof Instant instant) {
-            return instant.toEpochMilli() * TICKS_PER_MILLISECOND;
+            final var adj = EPOCH_ADJ + (upper ? TICKS_PER_MILLISECOND - 1 : 0L);
+            return instant.toEpochMilli() * TICKS_PER_MILLISECOND + adj;
         } else if (temporal instanceof LocalDate date) {
-            return date.toEpochSecond(LocalTime.of(0, 0), ZoneOffset.UTC) * TICKS_PER_SECOND;
+            final var time = upper ? LocalTime.of(23, 59, 59) : LocalTime.of(0, 0, 0);
+            final var adj = EPOCH_ADJ + (upper ? TICKS_PER_SECOND - 1 : 0L);
+            return date.toEpochSecond(time, ZoneOffset.UTC) * TICKS_PER_SECOND + adj;
         } else if (temporal instanceof LocalDateTime dateTime) {
-            return dateTime.toEpochSecond(ZoneOffset.UTC) * TICKS_PER_SECOND;
+            final var adj = EPOCH_ADJ + (upper ? TICKS_PER_SECOND - 1 : 0L);
+            return dateTime.toEpochSecond(ZoneOffset.UTC) * TICKS_PER_SECOND + adj;
         } else if (temporal instanceof OffsetDateTime dateTime) {
-            return dateTime.toEpochSecond() * TICKS_PER_SECOND;
+            final var adj = EPOCH_ADJ + (upper ? TICKS_PER_SECOND - 1 : 0L);
+            return dateTime.toEpochSecond() * TICKS_PER_SECOND + adj;
         } else if (temporal instanceof ZonedDateTime dateTime) {
-            return dateTime.toEpochSecond() * TICKS_PER_SECOND;
+            final var adj = EPOCH_ADJ + (upper ? TICKS_PER_SECOND - 1 : 0L);
+            return dateTime.toEpochSecond() * TICKS_PER_SECOND + adj;
         } else {
             throw new IllegalArgumentException(temporal.getClass().getName() + " is not supported");
         }

@@ -24,11 +24,20 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.within;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class TestUUIDIdentifierService {
@@ -103,7 +112,7 @@ class TestUUIDIdentifierService {
                 arguments((Object) new byte[]{33, -20, -22, -31, -88, 87, -53, -19, -98, 75, 59, -74, 28, -26, -74, 5}),
                 arguments((Object) new byte[]{17, -20, -22, -31, -88, 87, -53, -19, -34, 75, 59, -74, 28, -26, -74, 5}),
                 arguments((Object) new byte[]{17, -20, -22, -31, -88, 87, -53, -19, -98, 75, 59, -74, 28, -26, -74, 5, 5})
-                );
+        );
     }
 
     @ParameterizedTest
@@ -112,5 +121,94 @@ class TestUUIDIdentifierService {
     void rejectBadBinaryRepresentation(final byte[] binary) {
         assertThatThrownBy(() -> identifierService.fromBinary(binary))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void extractInstant() {
+        final var identifier = identifierService.generate();
+        assertThat(identifierService.toInstant(identifier)).isCloseTo(Instant.now(), within(1, ChronoUnit.SECONDS));
+    }
+
+    static Stream<Arguments> checkInstant() {
+        return Stream.of(
+                arguments("3TpBKrC7Ku1PBn5tMoPz5-", 1665817399834L),
+                arguments("3ThEOABeIM18pIEancdgaF", 1609857948615L),
+                arguments("3ThEOBSVOw18pIEancdgaF", 1609857982524L),
+                arguments("3ThEOBoj3Q18pIEancdgaF", 1609857992267L),
+                arguments("3Th5zlgTiMuiZk81f0B--V", 1608934705053L),
+                arguments("3Th5zlgTj21iZk81f0B--V", 1608934705053L),
+                arguments("3Th5zlgTjH1iZk81f0B--V", 1608934705053L)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void checkInstant(final String text, final long millis) {
+        final var identifier = identifierService.fromText(text);
+        final var instant = Instant.ofEpochMilli(millis);
+        assertThat(identifierService.toInstant(identifier)).isCloseTo(instant, within(1, ChronoUnit.SECONDS));
+    }
+
+    @Test
+    public void testInstantBounds() {
+        final var now = Instant.now();
+        final var lower = identifierService.asLowerBound(now);
+        final var upper = identifierService.asUpperBound(now);
+        assertThat(lower.text()).isLessThan(upper.text());
+        assertThat(upper.text()).isGreaterThan(lower.text());
+        assertThat(lower).isLessThan(upper);
+        assertThat(upper).isGreaterThan(lower);
+    }
+
+    @Test
+    public void testLocalDateBounds() {
+        final var now = LocalDate.now();
+        final var lower = identifierService.asLowerBound(now);
+        final var upper = identifierService.asUpperBound(now);
+        assertThat(lower.text()).isLessThan(upper.text());
+        assertThat(upper.text()).isGreaterThan(lower.text());
+        assertThat(lower).isLessThan(upper);
+        assertThat(upper).isGreaterThan(lower);
+        assertThat(identifierService.toInstant(lower)).isCloseTo(LocalDateTime.of(now, LocalTime.of(0, 0, 0)).toInstant(ZoneOffset.UTC), within(1, ChronoUnit.SECONDS));
+        assertThat(identifierService.toInstant(upper)).isCloseTo(LocalDateTime.of(now, LocalTime.of(23, 59, 59)).toInstant(ZoneOffset.UTC), within(1, ChronoUnit.SECONDS));
+    }
+
+    @Test
+    public void testLocalDateTimeBounds() {
+        final var now = LocalDateTime.now();
+        final var lower = identifierService.asLowerBound(now);
+        final var upper = identifierService.asUpperBound(now);
+        assertThat(lower.text()).isLessThan(upper.text());
+        assertThat(upper.text()).isGreaterThan(lower.text());
+        assertThat(lower).isLessThan(upper);
+        assertThat(upper).isGreaterThan(lower);
+        assertThat(identifierService.toInstant(lower)).isCloseTo(now.toInstant(ZoneOffset.UTC), within(1, ChronoUnit.SECONDS));
+        assertThat(identifierService.toInstant(upper)).isCloseTo(now.toInstant(ZoneOffset.UTC), within(1, ChronoUnit.SECONDS));
+    }
+
+    @Test
+    public void testOffsetDateTimeBounds() {
+        final var now = OffsetDateTime.now();
+        final var lower = identifierService.asLowerBound(now);
+        final var upper = identifierService.asUpperBound(now);
+        assertThat(lower.text()).isLessThan(upper.text());
+        assertThat(upper.text()).isGreaterThan(lower.text());
+        assertThat(lower).isLessThan(upper);
+        assertThat(upper).isGreaterThan(lower);
+        assertThat(identifierService.toInstant(lower)).isCloseTo(now.toInstant(), within(1, ChronoUnit.SECONDS));
+        assertThat(identifierService.toInstant(upper)).isCloseTo(now.toInstant(), within(1, ChronoUnit.SECONDS));
+    }
+
+    @Test
+    public void testZonedDateTimeBounds() {
+        final var now = ZonedDateTime.now();
+        final var lower = identifierService.asLowerBound(now);
+        final var upper = identifierService.asUpperBound(now);
+        assertThat(lower.text()).isLessThan(upper.text());
+        assertThat(upper.text()).isGreaterThan(lower.text());
+        assertThat(lower).isLessThan(upper);
+        assertThat(upper).isGreaterThan(lower);
+        assertThat(identifierService.toInstant(lower)).isCloseTo(now.toInstant(), within(1, ChronoUnit.SECONDS));
+        assertThat(identifierService.toInstant(upper)).isCloseTo(now.toInstant(), within(1, ChronoUnit.SECONDS));
     }
 }
