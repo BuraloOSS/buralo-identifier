@@ -14,7 +14,8 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -24,7 +25,7 @@
 
     <groupId>com.buralo</groupId>
     <artifactId>buralo-identifier</artifactId>
-    <version>1.2.1-SNAPSHOT</version>
+    <version>1.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Buralo Identifier</name>
@@ -92,7 +93,7 @@
             <plugins>
                 <plugin>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.0.0-M3</version>
+                    <version>3.1.0</version>
                     <executions>
                         <execution>
                             <id>enforce-versions</id>
@@ -111,73 +112,37 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.2.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.1</version>
+                    <version>3.10.1</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <version>3.0.0-M1</version>
+                    <version>3.0.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-install-plugin</artifactId>
-                    <version>3.0.0-M1</version>
+                    <version>3.0.1</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>3.3.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>3.3.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.0.0-M5</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>3.2.1</version>
-                    <executions>
-                        <execution>
-                            <id>attach-sources</id>
-                            <goals>
-                                <goal>jar-no-fork</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.2.0</version>
-                    <executions>
-                        <execution>
-                            <id>attach-javadocs</id>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-gpg-plugin</artifactId>
-                    <version>1.6</version>
-                    <executions>
-                        <execution>
-                            <id>sign-artifacts</id>
-                            <phase>verify</phase>
-                            <goals>
-                                <goal>sign</goal>
-                            </goals>
-                        </execution>
-                    </executions>
+                    <version>3.0.0-M7</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>3.0.0-M1</version>
+                    <version>3.0.0-M6</version>
                     <configuration>
+                        <releaseProfiles>release</releaseProfiles>
                         <localCheckout>true</localCheckout>
                         <pushChanges>false</pushChanges>
                         <tagNameFormat>@{project.version}</tagNameFormat>
@@ -186,35 +151,55 @@
                         <dependency>
                             <groupId>org.apache.maven.scm</groupId>
                             <artifactId>maven-scm-provider-gitexe</artifactId>
-                            <version>1.11.2</version>
+                            <version>2.0.0-M2</version>
                         </dependency>
                     </dependencies>
                 </plugin>
             </plugins>
         </pluginManagement>
-        <plugins>
-            <plugin>
-                <artifactId>maven-source-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-            </plugin>
-        </plugins>
     </build>
 
     <profiles>
         <profile>
-            <id>release-sign-artifacts</id>
-            <activation>
-                <property>
-                    <name>performRelease</name>
-                    <value>true</value>
-                </property>
-            </activation>
+            <id>release</id>
             <build>
                 <plugins>
                     <plugin>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.2.0</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
                         <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
