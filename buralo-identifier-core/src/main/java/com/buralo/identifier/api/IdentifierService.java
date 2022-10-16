@@ -16,6 +16,9 @@
  */
 package com.buralo.identifier.api;
 
+import java.time.Instant;
+import java.time.temporal.Temporal;
+
 /**
  * Generate identifiers and parse binary and textual representations of identifiers.
  */
@@ -33,6 +36,7 @@ public interface IdentifierService {
      *
      * @param text The text representation.
      * @return The identifier.
+     * @throws IllegalArgumentException If the text representation is not valid.
      */
     Identifier fromText(String text);
 
@@ -41,6 +45,46 @@ public interface IdentifierService {
      *
      * @param binary The binary representation.
      * @return The identifier.
+     * @throws IllegalArgumentException If the binary representation is not valid.
      */
     Identifier fromBinary(byte[] binary);
+
+    /**
+     * Extract an instant from an identifier.
+     *
+     * @param identifier The identifier.
+     * @return The instant.
+     * @throws UnsupportedOperationException If the operation is not supported.
+     */
+    default Instant toInstant(final Identifier identifier) {
+        throw new UnsupportedOperationException("Cannot extract timestamp from " + identifier);
+    }
+
+    /**
+     * Generate a lower-bound identifier for temporal value that can be used in range queries.
+     *
+     * @param time The temporal value ({@link java.time.Instant}, {@link java.time.LocalDate},
+     *             {@link java.time.LocalDateTime}, {@link java.time.OffsetDateTime},
+     *             {@link java.time.ZonedDateTime})
+     * @return A lower-bound identifier that can be used in a range query.
+     * @throws UnsupportedOperationException If the operation is not supported for the identifier type.
+     * @throws IllegalArgumentException If the temporal type is not supported.
+     */
+    default Identifier asLowerBound(final Temporal time) {
+        throw new UnsupportedOperationException("Cant generate lower-bound identifier for " + time);
+    }
+
+    /**
+     * Generate an upper-bound identifier for temporal value that can be used in range queries.
+     *
+     * @param time The temporal value ({@link java.time.Instant}, {@link java.time.LocalDate},
+     *             {@link java.time.LocalDateTime}, {@link java.time.OffsetDateTime},
+     *             {@link java.time.ZonedDateTime})
+     * @return A upper-bound identifier that can be used in a range query.
+     * @throws UnsupportedOperationException If the operation is not supported for the identifier type.
+     * @throws IllegalArgumentException If the temporal type is not supported.
+     */
+    default Identifier asUpperBound(final Temporal time) {
+        throw new UnsupportedOperationException("Cant generate upper-bound identifier for " + time);
+    }
 }

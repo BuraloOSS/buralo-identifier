@@ -22,6 +22,16 @@ import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.NoArgGenerator;
 import com.fasterxml.uuid.impl.UUIDUtil;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
@@ -69,6 +79,32 @@ public final class UUIDIdentifierService implements IdentifierService {
      * The regular expression pattern used to validate identifiers.
      */
     private static final Pattern PATTERN = Pattern.compile("[3456][0-9a-zA-Z_-]{9}[159DHLPTXaeimquy][0-9a-zA-Z_-]{10}[FVk-]");
+
+    /**
+     * Mask to remove the UUID version.
+     */
+    private static final long MASK = 0x0fffffffffffffffL;
+
+    /**
+     * Number of ticks per millisecond. The UUID tick is 100 nanoseconds.
+     */
+    private static final long TICKS_PER_MILLISECOND = 10000L;
+
+    /**
+     * Number of ticks per second. TheUUID thick is 100 nanoseconds.
+     */
+    private static final long TICKS_PER_SECOND = 10000000L;
+
+    /**
+     * The number of nanoseconds in a UUID tick.
+     */
+    private static final int TICK_NANOS = 100;
+
+    /**
+     * The adjustment to apply to convert UUID epoch to Unix Epoch. The UUID epoch 15 October 1582, while the Unix
+     * epoch is 1 January 1970.
+     */
+    private static final long EPOCH_ADJ = 122192928000000000L;
 
     /**
      * Used to generate time based UUIDs.
@@ -257,5 +293,89 @@ public final class UUIDIdentifierService implements IdentifierService {
         final var value = DECODING[ch];
         assert value != -1;
         return value;
+    }
+
+    /**
+     * Extract an instant from an identifier.
+     *
+     * @param identifier The identifier.
+     * @return The instant.
+     */
+    @Override
+    public Instant toInstant(final Identifier identifier) {
+        if (identifier == null) {
+            return null;
+        }
+        if (identifier instanceof UUIDIdentifier uuidIdentifier) {
+            final var buf = ByteBuffer.wrap(uuidIdentifier.binary());
+            buf.order(ByteOrder.BIG_ENDIAN);
+            final var ticks = (buf.getLong(0) & MASK) - EPOCH_ADJ;
+            return Instant.ofEpochSecond(ticks / TICKS_PER_SECOND, (ticks % TICKS_PER_SECOND) * TICK_NANOS);
+
+        } else {
+            throw new IllegalArgumentException("UUIDIdentifier is required");
+        }
+    }
+
+    /**
+     * Generate a lower-bound identifier for temporal value that can be used in range queries.
+     *
+     * @param time The temporal value ({@link java.time.Instant}, {@link java.time.LocalDate},
+     *             {@link java.time.LocalDateTime}, {@link java.time.OffsetDateTime},
+     *             {@link java.time.ZonedDateTime})
+     * @return A lower-bound identifier that can be used in a range query.
+     * @throws IllegalArgumentException If the temporal type is not supported.
+     */
+    @Override
+    public Identifier asLowerBound(final Temporal time) {
+        return fromTicks(toTicks(time), 0x8000000000000000L);
+    }
+
+    /**
+     * Generate an upper-bound identifier for temporal value that can be used in range queries.
+     *
+     * @param time The temporal value ({@link java.time.Instant}, {@link java.time.LocalDate},
+     *             {@link java.time.LocalDateTime}, {@link java.time.OffsetDateTime},
+     *             {@link java.time.ZonedDateTime})
+     * @return An upper-bound identifier that can be used in a range query.
+     * @throws IllegalArgumentException If the temporal type is not supported.
+     */
+    @Override
+    public Identifier asUpperBound(final Temporal time) {
+        return fromTicks(toTicks(time) + TICKS_PER_SECOND - 1, 0x8FFFFFFFFFFFFFFFL);
+    }
+
+    private Identifier fromTicks(final long ticks, final long suffix) {
+        final var bytes = new byte[16];
+        final var buffer = ByteBuffer.wrap(bytes);
+        buffer.order(ByteOrder.BIG_ENDIAN);
+        buffer.putLong(ticks | 0x1000000000000000L);
+        buffer.putLong(suffix);
+        return fromBinary(bytes);
+    }
+
+    /**
+     * Given a temporal value extract the number of UUID ticks (100 nanoseconds).
+     *
+     * @param temporal The temporal value ({@link java.time.Instant}, {@link java.time.LocalDate},
+     *                 {@link java.time.LocalDateTime}, {@link java.time.OffsetDateTime},
+     *                 {@link java.time.ZonedDateTime})
+     * @return The number of ticks.
+     * @throws IllegalArgumentException If the temporal type is not supported.
+     */
+    private long toTicks(final Temporal temporal) {
+        if (temporal instanceof Instant instant) {
+            return instant.toEpochMilli() * TICKS_PER_MILLISECOND;
+        } else if (temporal instanceof LocalDate date) {
+            return date.toEpochSecond(LocalTime.of(0, 0), ZoneOffset.UTC) * TICKS_PER_SECOND;
+        } else if (temporal instanceof LocalDateTime dateTime) {
+            return dateTime.toEpochSecond(ZoneOffset.UTC) * TICKS_PER_SECOND;
+        } else if (temporal instanceof OffsetDateTime dateTime) {
+            return dateTime.toEpochSecond() * TICKS_PER_SECOND;
+        } else if (temporal instanceof ZonedDateTime dateTime) {
+            return dateTime.toEpochSecond() * TICKS_PER_SECOND;
+        } else {
+            throw new IllegalArgumentException(temporal.getClass().getName() + " is not supported");
+        }
     }
 }
