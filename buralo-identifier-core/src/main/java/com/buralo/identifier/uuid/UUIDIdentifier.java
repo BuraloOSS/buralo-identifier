@@ -62,7 +62,7 @@ public record UUIDIdentifier(String text, byte[] binary) implements Identifier {
      */
     @Override
     public int compareTo(final Identifier other) {
-        return Arrays.compare(binary, other.binary());
+        return Arrays.compareUnsigned(binary, other.binary());
     }
 
     /**
