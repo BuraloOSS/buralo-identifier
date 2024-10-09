@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright 2022 Búraló Technologies
+    Copyright 2022-2024 Búraló Technologies
 
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
@@ -18,16 +18,12 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <prerequisites>
-        <maven>3.8.6</maven>
-    </prerequisites>
-
-    <groupId>com.buralo</groupId>
-    <artifactId>buralo-identifier</artifactId>
-    <version>1.2.1-SNAPSHOT</version>
+    <groupId>com.buralotech.oss.identifier</groupId>
+    <artifactId>buralotech-identifier</artifactId>
+    <version>1.3.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Buralo Identifier</name>
+    <name>Búraló Technologies Identifier</name>
 
     <description>
         Generate domain object identifiers from UUIDs that are globally unique and sortable in their binary and textual
@@ -48,21 +44,20 @@
         <developer>
             <id>bmatthews68</id>
             <name>Brian Matthews</name>
-            <email>brian@btmatthews.com</email>
-            <url>http://www.btmatthews.com/</url>
+            <email>bmatthews68@gmail.com</email>
         </developer>
     </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <processDependencyManagementTransitive>false</processDependencyManagementTransitive>
+        <maven.compiler.release>21</maven.compiler.release>
     </properties>
 
     <modules>
-        <module>buralo-identifier-core</module>
-        <module>buralo-identifier-spring</module>
+        <module>buralotech-identifier-core</module>
+        <module>buralotech-identifier-spring</module>
     </modules>
 
     <dependencyManagement>
@@ -70,19 +65,19 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>2.7.4</version>
+                <version>3.3.4</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>com.buralo</groupId>
-                <artifactId>buralo-identifier-core</artifactId>
+                <groupId>com.buralotech.oss.identifier</groupId>
+                <artifactId>buralotech-identifier-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.uuid</groupId>
                 <artifactId>java-uuid-generator</artifactId>
-                <version>4.0.1</version>
+                <version>5.1.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -92,7 +87,7 @@
             <plugins>
                 <plugin>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.5.0</version>
                     <executions>
                         <execution>
                             <id>enforce-versions</id>
@@ -102,7 +97,7 @@
                             <configuration>
                                 <rules>
                                     <requireMavenVersion>
-                                        <version>3.8.6</version>
+                                        <version>3.9.9</version>
                                     </requireMavenVersion>
                                 </rules>
                             </configuration>
@@ -111,35 +106,35 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>3.4.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.10.1</version>
+                    <version>3.13.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>3.1.3</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-install-plugin</artifactId>
-                    <version>3.0.1</version>
+                    <version>3.1.3</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>3.4.2</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>3.3.1</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.0.0-M7</version>
+                    <version>3.5.1</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>3.0.0-M6</version>
+                    <version>3.1.1</version>
                     <configuration>
                         <releaseProfiles>release</releaseProfiles>
                         <localCheckout>true</localCheckout>
@@ -149,6 +144,12 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+            </plugin>
+        </plugins>
     </build>
 
     <profiles>
@@ -158,7 +159,7 @@
                 <plugins>
                     <plugin>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>3.2.1</version>
+                        <version>3.3.1</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
@@ -170,7 +171,7 @@
                     </plugin>
                     <plugin>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.2.0</version>
+                        <version>3.10.1</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
@@ -182,7 +183,7 @@
                     </plugin>
                     <plugin>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.6</version>
+                        <version>3.2.7</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
@@ -209,7 +210,7 @@
 
     <organization>
         <name>Búraló Technologies</name>
-        <url>https://www.buralo.com</url>
+        <url>https://www.buralotech.com</url>
     </organization>
 
     <issueManagement>
