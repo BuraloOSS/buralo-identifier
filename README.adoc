@@ -1,4 +1,4 @@
-= Buralo Technologies Identifier
+= Búraló Technologies Identifier
 
 == Overview
 
@@ -66,6 +66,12 @@ The following delegates are available:
 private IdentifierService identifierService;
 ----
 
+* The Type 6 UUIDs are used by default. If you want to use the now deprecated modified Type 1 UUIDs then you will need to override the following property:
++
+----
+buralotech.identifier.generator=v1
+----
+
 == Generating identifiers
 
 * Generate an identifier:
@@ -103,7 +109,7 @@ var id = identifierService.fromBinary(bytes);
 
 == Working with timestamps
 
-* Type 1 UUIDs contain the timestamp of the generation time. This means the identifier can do double duty since it is both the unique identifier and the creation date/time.
+* Type 1 and Type 6 UUIDs contain the timestamp of the generation time. This means the identifier can do double duty since it is both the unique identifier and the creation date/time.
 
 * You can extract the timestamp from the identifier using `IdentifierService.toInstant(Identifier)`.
 
@@ -111,4 +117,4 @@ var id = identifierService.fromBinary(bytes);
 
 == License & Source Code
 
-The **Buralo Technologies Identifier** is made available under the http://www.apache.org/licenses/LICENSE-2.0.html[Apache License] and the source code is hosted on http://github.com[GitHub] at https://github.com/BuraloOSS/buralo-identiifer.
+The **Búraló Technologies Identifier** is made available under the http://www.apache.org/licenses/LICENSE-2.0.html[Apache License] and the source code is hosted on http://github.com[GitHub] at https://github.com/BuraloOSS/buralo-identiifer.
