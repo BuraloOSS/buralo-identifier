@@ -18,6 +18,11 @@ package com.buralotech.oss.identifier.spring;
 
 import com.buralotech.oss.identifier.api.IdentifierService;
 import com.buralotech.oss.identifier.uuid.UUIDIdentifierService;
+import com.buralotech.oss.identifier.uuid.UUIDVersion1Delegate;
+import com.buralotech.oss.identifier.uuid.UUIDVersion6Delegate;
+import com.buralotech.oss.identifier.uuid.UUIDVersionDelegate;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -33,8 +38,8 @@ public class IdentifierConfig {
      * @return The identifier service bean.
      */
     @Bean
-    IdentifierService identifierService() {
-        return new UUIDIdentifierService();
+    IdentifierService identifierService(final UUIDVersionDelegate delegate) {
+        return new UUIDIdentifierService(delegate);
     }
 
     /**
@@ -43,7 +48,19 @@ public class IdentifierConfig {
      * @return The identifier converter bean.
      */
     @Bean
-    IdentifierConverter identifierConverter() {
-        return new IdentifierConverter(identifierService());
+    IdentifierConverter identifierConverter(final IdentifierService service) {
+        return new IdentifierConverter(service);
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "buralotech.identifier.generator", matchIfMissing = true, havingValue = "v6")
+    UUIDVersionDelegate version6Delegate() {
+        return new UUIDVersion6Delegate();
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "buralotech.identifier.generator", havingValue = "v1")
+    UUIDVersionDelegate version1Delegate() {
+        return new UUIDVersion1Delegate();
     }
 }

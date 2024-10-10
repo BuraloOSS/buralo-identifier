@@ -18,6 +18,7 @@ package com.buralotech.oss.identifier.spring;
 
 import com.buralotech.oss.identifier.uuid.UUIDIdentifier;
 import com.buralotech.oss.identifier.uuid.UUIDIdentifierService;
+import com.buralotech.oss.identifier.uuid.UUIDVersion1Delegate;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -32,7 +33,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class IdentifierConverterTest {
 
-    private final IdentifierConverter identifierConverter = new IdentifierConverter(new UUIDIdentifierService());
+    private final IdentifierConverter identifierConverter = new IdentifierConverter(new UUIDIdentifierService(new UUIDVersion1Delegate()));
 
     static Stream<Arguments> conversionSuccesses() {
         return Stream.of(
@@ -60,7 +61,7 @@ class IdentifierConverterTest {
             "3TnesPWMmyuTHniq6DPq0Fk"
     })
     void conversionFailures(final String text) {
-        assertThatThrownBy(() ->identifierConverter.convert(text))
+        assertThatThrownBy(() -> identifierConverter.convert(text))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

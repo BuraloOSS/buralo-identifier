@@ -40,9 +40,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.within;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-class TestUUIDIdentifierService {
+class TestUUIDIdentifierServiceV1 {
 
-    private final IdentifierService identifierService = new UUIDIdentifierService();
+    private final IdentifierService identifierService = new UUIDIdentifierService(new UUIDVersion1Delegate());
 
     @Test
     void generatedIdentifierIsConsistent() {

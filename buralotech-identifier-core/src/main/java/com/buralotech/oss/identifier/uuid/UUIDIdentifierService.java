@@ -18,27 +18,16 @@ package com.buralotech.oss.identifier.uuid;
 
 import com.buralotech.oss.identifier.api.Identifier;
 import com.buralotech.oss.identifier.api.IdentifierService;
-import com.fasterxml.uuid.Generators;
-import com.fasterxml.uuid.NoArgGenerator;
-import com.fasterxml.uuid.impl.UUIDUtil;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
-import java.util.regex.Pattern;
 
 /**
- * Generate identifiers and parse binary and textual representations of identifiers. The generator uses a Type 1 UUID
- * generator and juggles the bits so that the binary representations can be ordered by generation time. The textual
- * representation is a modified URL-safe base 64 encoding that is also sortable.
+ * Generate identifiers and parse binary and textual representations of identifiers. The generator uses either a Type 1
+ * UUID generator and juggles the bits so that the binary representations can be ordered by generation time or a new
+ * Type 6 UUID which is reordered in a similar way but is standardised. The textual representation is a modified
+ * URL-safe base 64 encoding that is also sortable.
  */
 public final class UUIDIdentifierService implements IdentifierService {
 
@@ -76,16 +65,6 @@ public final class UUIDIdentifierService implements IdentifierService {
     }
 
     /**
-     * The regular expression pattern used to validate identifiers.
-     */
-    private static final Pattern PATTERN = Pattern.compile("[3456][0-9a-zA-Z_-]{9}[159DHLPTXaeimquy][0-9a-zA-Z_-]{10}[FVk-]");
-
-    /**
-     * Mask to remove the UUID version.
-     */
-    private static final long MASK = 0x0fffffffffffffffL;
-
-    /**
      * Number of ticks per millisecond. The UUID tick is 100 nanoseconds.
      */
     private static final long TICKS_PER_MILLISECOND = 10000L;
@@ -96,20 +75,24 @@ public final class UUIDIdentifierService implements IdentifierService {
     private static final long TICKS_PER_SECOND = 10000000L;
 
     /**
-     * The number of nanoseconds in a UUID tick.
-     */
-    private static final int TICK_NANOS = 100;
-
-    /**
      * The adjustment to apply to convert UUID epoch to Unix Epoch. The UUID epoch 15 October 1582, while the Unix
      * epoch is 1 January 1970.
      */
     private static final long EPOCH_ADJ = 122192928000000000L;
 
     /**
-     * Used to generate time based UUIDs.
+     * Delegate that encapsulates logic that is specific to the UUID format.
      */
-    private final NoArgGenerator generator = Generators.timeBasedGenerator();
+    private final UUIDVersionDelegate delegate;
+
+    /**
+     * Constructor used to inject the delegate that encapsulates the logic that is specific to the UUID format.
+     *
+     * @param delegate Encapsulates logic that is specific to the UUID format.
+     */
+    public UUIDIdentifierService(final UUIDVersionDelegate delegate) {
+        this.delegate = delegate;
+    }
 
     /**
      * Generate an identifier using an underlying UUID generator.
@@ -118,11 +101,9 @@ public final class UUIDIdentifierService implements IdentifierService {
      */
     @Override
     public Identifier generate() {
-        final var uuid = generator.generate();
-        final var binary = UUIDUtil.asByteArray(uuid);
-        swap(binary, 4);
-        swap(binary, 2);
-        return fromBinary(binary);
+        final var binary = delegate.generate();
+        final var text = encode(binary);
+        return new UUIDIdentifier(text, binary);
     }
 
     /**
@@ -133,7 +114,7 @@ public final class UUIDIdentifierService implements IdentifierService {
      */
     @Override
     public Identifier fromText(final String text) {
-        if (text == null || !PATTERN.matcher(text).matches()) {
+        if (text == null || !delegate.isValidText(text)) {
             throw new IllegalArgumentException("invalid text representation of identifier");
         }
         final var binary = decode(text);
@@ -148,26 +129,11 @@ public final class UUIDIdentifierService implements IdentifierService {
      */
     @Override
     public Identifier fromBinary(final byte[] binary) {
-        if (binary == null || binary.length != 16 || ((binary[0] & 0xf0) >> 4 != 1) || ((binary[8] & 0xc0) >> 6 != 2)) {
+        if (binary == null || binary.length != 16 || !delegate.isValidBinary(binary)) {
             throw new IllegalArgumentException("invalid binary representation of identifier");
         }
         final var text = encode(binary);
         return new UUIDIdentifier(text, binary);
-    }
-
-    /**
-     * Swap the first {@code len} bytes of the array with the subsequent {@code len} bytes.
-     *
-     * @param bytes The byte array.
-     * @param len   The number of bytes to swap.
-     */
-    private void swap(final byte[] bytes,
-                      final int len) {
-        for (int i = 0; i < len; i++) {
-            bytes[i] ^= bytes[len + i];
-            bytes[len + i] ^= bytes[i];
-            bytes[i] ^= bytes[len + i];
-        }
     }
 
     /**
@@ -307,10 +273,7 @@ public final class UUIDIdentifierService implements IdentifierService {
             return null;
         }
         if (identifier instanceof UUIDIdentifier uuidIdentifier) {
-            final var buf = ByteBuffer.wrap(uuidIdentifier.binary());
-            buf.order(ByteOrder.BIG_ENDIAN);
-            final var ticks = (buf.getLong(0) & MASK) - EPOCH_ADJ;
-            return Instant.ofEpochSecond(ticks / TICKS_PER_SECOND, (ticks % TICKS_PER_SECOND) * TICK_NANOS);
+            return delegate.toInstant(uuidIdentifier.binary());
 
         } else {
             throw new IllegalArgumentException("UUIDIdentifier is required");
@@ -328,7 +291,9 @@ public final class UUIDIdentifierService implements IdentifierService {
      */
     @Override
     public Identifier asLowerBound(final Temporal time) {
-        return fromTicks(toTicks(time, false), 0x8000000000000000L);
+        final var binary = delegate.fromTicks(toTicks(time, false), 0x8000000000000000L);
+        final var text = encode(binary);
+        return new UUIDIdentifier(text, binary);
     }
 
     /**
@@ -342,16 +307,9 @@ public final class UUIDIdentifierService implements IdentifierService {
      */
     @Override
     public Identifier asUpperBound(final Temporal time) {
-        return fromTicks(toTicks(time, true), 0x8FFFFFFFFFFFFFFFL);
-    }
-
-    private Identifier fromTicks(final long ticks, final long suffix) {
-        final var bytes = new byte[16];
-        final var buffer = ByteBuffer.wrap(bytes);
-        buffer.order(ByteOrder.BIG_ENDIAN);
-        buffer.putLong(ticks | 0x1000000000000000L);
-        buffer.putLong(suffix);
-        return fromBinary(bytes);
+        final var binary = delegate.fromTicks(toTicks(time, true), 0x8FFFFFFFFFFFFFFFL);
+        final var text = encode(binary);
+        return new UUIDIdentifier(text, binary);
     }
 
     /**
@@ -364,24 +322,29 @@ public final class UUIDIdentifierService implements IdentifierService {
      * @throws IllegalArgumentException If the temporal type is not supported.
      */
     private long toTicks(final Temporal temporal, final boolean upper) {
-        if (temporal instanceof Instant instant) {
-            final var adj = EPOCH_ADJ + (upper ? TICKS_PER_MILLISECOND - 1 : 0L);
-            return instant.toEpochMilli() * TICKS_PER_MILLISECOND + adj;
-        } else if (temporal instanceof LocalDate date) {
-            final var time = upper ? LocalTime.of(23, 59, 59) : LocalTime.of(0, 0, 0);
-            final var adj = EPOCH_ADJ + (upper ? TICKS_PER_SECOND - 1 : 0L);
-            return date.toEpochSecond(time, ZoneOffset.UTC) * TICKS_PER_SECOND + adj;
-        } else if (temporal instanceof LocalDateTime dateTime) {
-            final var adj = EPOCH_ADJ + (upper ? TICKS_PER_SECOND - 1 : 0L);
-            return dateTime.toEpochSecond(ZoneOffset.UTC) * TICKS_PER_SECOND + adj;
-        } else if (temporal instanceof OffsetDateTime dateTime) {
-            final var adj = EPOCH_ADJ + (upper ? TICKS_PER_SECOND - 1 : 0L);
-            return dateTime.toEpochSecond() * TICKS_PER_SECOND + adj;
-        } else if (temporal instanceof ZonedDateTime dateTime) {
-            final var adj = EPOCH_ADJ + (upper ? TICKS_PER_SECOND - 1 : 0L);
-            return dateTime.toEpochSecond() * TICKS_PER_SECOND + adj;
-        } else {
-            throw new IllegalArgumentException(temporal.getClass().getName() + " is not supported");
+        switch (temporal) {
+            case Instant instant -> {
+                final var adj = EPOCH_ADJ + (upper ? TICKS_PER_MILLISECOND - 1 : 0L);
+                return instant.toEpochMilli() * TICKS_PER_MILLISECOND + adj;
+            }
+            case LocalDate date -> {
+                final var time = upper ? LocalTime.of(23, 59, 59) : LocalTime.of(0, 0, 0);
+                final var adj = EPOCH_ADJ + (upper ? TICKS_PER_SECOND - 1 : 0L);
+                return date.toEpochSecond(time, ZoneOffset.UTC) * TICKS_PER_SECOND + adj;
+            }
+            case LocalDateTime dateTime -> {
+                final var adj = EPOCH_ADJ + (upper ? TICKS_PER_SECOND - 1 : 0L);
+                return dateTime.toEpochSecond(ZoneOffset.UTC) * TICKS_PER_SECOND + adj;
+            }
+            case OffsetDateTime dateTime -> {
+                final var adj = EPOCH_ADJ + (upper ? TICKS_PER_SECOND - 1 : 0L);
+                return dateTime.toEpochSecond() * TICKS_PER_SECOND + adj;
+            }
+            case ZonedDateTime dateTime -> {
+                final var adj = EPOCH_ADJ + (upper ? TICKS_PER_SECOND - 1 : 0L);
+                return dateTime.toEpochSecond() * TICKS_PER_SECOND + adj;
+            }
+            default -> throw new IllegalArgumentException(temporal.getClass().getName() + " is not supported");
         }
     }
 }
