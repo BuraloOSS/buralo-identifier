@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"com.buralotech.oss.identifier.uuid","l":"TestUUIDIdentifierServiceV1"},{"p":"com.buralotech.oss.identifier.uuid","l":"TestUUIDIdentifierServiceV6"}];updateSearchResults();
