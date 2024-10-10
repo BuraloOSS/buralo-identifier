@@ -109,7 +109,7 @@ public final class UUIDIdentifierService implements IdentifierService {
     /**
      * Used to generate time based UUIDs.
      */
-    private final NoArgGenerator generator = Generators.timeBasedReorderedGenerator();
+    private final NoArgGenerator generator = Generators.timeBasedGenerator();
 
     /**
      * Generate an identifier using an underlying UUID generator.
@@ -120,6 +120,8 @@ public final class UUIDIdentifierService implements IdentifierService {
     public Identifier generate() {
         final var uuid = generator.generate();
         final var binary = UUIDUtil.asByteArray(uuid);
+        swap(binary, 4);
+        swap(binary, 2);
         return fromBinary(binary);
     }
 
@@ -151,6 +153,21 @@ public final class UUIDIdentifierService implements IdentifierService {
         }
         final var text = encode(binary);
         return new UUIDIdentifier(text, binary);
+    }
+
+    /**
+     * Swap the first {@code len} bytes of the array with the subsequent {@code len} bytes.
+     *
+     * @param bytes The byte array.
+     * @param len   The number of bytes to swap.
+     */
+    private void swap(final byte[] bytes,
+                      final int len) {
+        for (int i = 0; i < len; i++) {
+            bytes[i] ^= bytes[len + i];
+            bytes[len + i] ^= bytes[i];
+            bytes[i] ^= bytes[len + i];
+        }
     }
 
     /**
