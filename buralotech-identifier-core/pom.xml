@@ -26,7 +26,7 @@
 
     <artifactId>buralotech-identifier-core</artifactId>
 
-    <name>Buralo Identifier Core</name>
+    <name>Búraló Identifier Core</name>
 
     <dependencies>
         <dependency>

@@ -56,7 +56,7 @@ The following delegates are available:
 </dependency>
 ----
 
-* The `buralotech-identifier-spring` contains auto-configuration that exports an `IdenifierService` and `IdentifierConverter` bean. The `IdentifierConverter` bean allows conversion from the string r
+* The `buralotech-identifier-spring` contains autoconfiguration that exports an `IdentifierService` and `IdentifierConverter` bean. The `IdentifierConverter` bean allows conversion from the string representation.
 
 * Auto-wire the `IdentifierService` bean:
 +
@@ -83,12 +83,12 @@ var id = identifierService.generate();
 
 * `id` is a record of type `UUIDIdentifier` which implements the `Identifier` interface.
 
-* `id.binary()` returns a `byte[16]` arrary that con be stored in a `BINARY(16)` column in the database.
+* `id.binary()` returns a `byte[16]` array that con be stored in a `BINARY(16)` column in the database.
 +
 [source,java]
 ----
 PreparedStatement ps = /* ... */;
-ps.setBytes(1, id.binary())
+ps.setBytes(1, id.binary());
 ----
 
 * `id.text()` returns a 22 character URL-safe string that can be used in RESTful APIs as part of the URI path or in request/response payloads.

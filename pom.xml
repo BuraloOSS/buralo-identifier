@@ -133,6 +133,11 @@
                     <version>3.5.1</version>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>4.0.0-M16</version>
+                </plugin>
+                <plugin>
                     <artifactId>maven-release-plugin</artifactId>
                     <version>3.1.1</version>
                     <configuration>
@@ -147,6 +152,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-publish-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <scmBranch>gh-pages</scmBranch>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -216,6 +229,13 @@
         </profile>
     </profiles>
 
+    <distributionManagement>
+        <site>
+            <id>github</id>
+            <url>scm:git:git@github.com:BuraloOSS/buralo-identifier.git</url>
+        </site>
+    </distributionManagement>
+
     <scm>
         <url>https://github.com/BuraloOSS/buralo-identifier</url>
         <connection>scm:git:git@github.com:BuraloOSS/buralo-identifier.git</connection>
@@ -226,7 +246,7 @@
     <url>https://github.com/BuraloOSS/buralo-identifier</url>
 
     <organization>
-        <name>Búraló Technologies</name>
+        <name>Buralo Technologies</name>
         <url>https://www.buralotech.com</url>
     </organization>
 
