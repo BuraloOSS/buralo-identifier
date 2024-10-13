@@ -290,12 +290,12 @@
         </profile>
     </profiles>
 
-    <distributionManagement>
-        <site>
-            <id>github</id>
-            <url>scm:git:git@github.com:BuraloOSS/buralo-identifier.git</url>
-        </site>
-    </distributionManagement>
+<!--    <distributionManagement>-->
+<!--        <site>-->
+<!--            <id>github</id>-->
+<!--            <url>scm:git:git@github.com:BuraloOSS/buralo-identifier.git</url>-->
+<!--        </site>-->
+<!--    </distributionManagement>-->
 
     <scm>
         <url>https://github.com/BuraloOSS/buralo-identifier</url>
