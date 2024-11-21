@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.buralotech.oss.identifier</groupId>
         <artifactId>buralotech-identifier</artifactId>
-        <version>1.3.2-SNAPSHOT</version>
+        <version>1.4.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>buralotech-identifier-spring</artifactId>
