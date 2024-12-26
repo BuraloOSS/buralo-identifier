@@ -17,7 +17,7 @@ This library was created using Java 21.
 <dependency>
     <groupId>com.buralotech.oss.identifier</groupId>
     <artifactId>buralotech-identifier-core</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
 </dependency>
 ----
 
@@ -43,7 +43,7 @@ The following delegates are available:
 <dependency>
     <groupId>com.buralotech.oss.identifier</groupId>
     <artifactId>buralotech-identifier-core</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
 </dependency>
 ----
 +
@@ -66,10 +66,16 @@ The following delegates are available:
 private IdentifierService identifierService;
 ----
 
-* The Type 6 UUIDs are used by default. If you want to use the now deprecated modified Type 1 UUIDs then you will need to override the following property:
+* Type 7 UUIDs are used by default. If you want to use the now deprecated modified Type 1 UUIDs then you will need to override the following property:
 +
 ----
 buralotech.identifier.generator=v1
+----
+
+* Type 6 UUIDs are also supported and can be used by setting the same property as follows:
++
+----
+buralotech.identifier.generator=v6
 ----
 
 == Generating identifiers
@@ -109,7 +115,7 @@ var id = identifierService.fromBinary(bytes);
 
 == Working with timestamps
 
-* Type 1 and Type 6 UUIDs contain the timestamp of the generation time. This means the identifier can do double duty since it is both the unique identifier and the creation date/time.
+* Type 1, Type 6 and Type 6 UUIDs contain the timestamp of the generation time. This means the identifier can do double duty since it is both the unique identifier and the creation date/time.
 
 * You can extract the timestamp from the identifier using `IdentifierService.toInstant(Identifier)`.
 
