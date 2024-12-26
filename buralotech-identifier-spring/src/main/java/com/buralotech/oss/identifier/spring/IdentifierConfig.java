@@ -17,10 +17,7 @@
 package com.buralotech.oss.identifier.spring;
 
 import com.buralotech.oss.identifier.api.IdentifierService;
-import com.buralotech.oss.identifier.uuid.UUIDIdentifierService;
-import com.buralotech.oss.identifier.uuid.UUIDVersion1Delegate;
-import com.buralotech.oss.identifier.uuid.UUIDVersion6Delegate;
-import com.buralotech.oss.identifier.uuid.UUIDVersionDelegate;
+import com.buralotech.oss.identifier.uuid.*;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -53,7 +50,13 @@ public class IdentifierConfig {
     }
 
     @Bean
-    @ConditionalOnProperty(name = "buralotech.identifier.generator", matchIfMissing = true, havingValue = "v6")
+    @ConditionalOnProperty(name = "buralotech.identifier.generator", matchIfMissing = true, havingValue = "v7")
+    UUIDVersionDelegate version7Delegate() {
+        return new UUIDVersion7Delegate();
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "buralotech.identifier.generator", havingValue = "v6")
     UUIDVersionDelegate version6Delegate() {
         return new UUIDVersion6Delegate();
     }
