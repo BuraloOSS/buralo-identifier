@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.buralotech.oss.identifier.spring"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"buralotech.identifier.spring","l":"com.buralotech.oss.identifier.spring"}];updateSearchResults();

@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.buralotech.oss.identifier.api"},{"l":"com.buralotech.oss.identifier.uuid"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"buralotech.identifier.core","l":"com.buralotech.oss.identifier.api"},{"m":"buralotech.identifier.core","l":"com.buralotech.oss.identifier.uuid"}];updateSearchResults();

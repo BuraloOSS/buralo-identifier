@@ -1,2 +1,3 @@
+module:buralotech.identifier.core
 com.buralotech.oss.identifier.api
 com.buralotech.oss.identifier.uuid
