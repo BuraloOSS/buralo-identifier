@@ -36,7 +36,9 @@ private final IdentifierService identifierService = new UUIDIdentifierService(ne
 
   The following delegates are available:
 
-  * <<<UUIDVersion6Delegate>>> (recommended) -- uses the standard Type 6 UUID format which was designed with database locality in mind.
+  * <<<UUIDVersion7Delegate>>> (recommended) -- uses the standard Type 7 UUID format which was designed with database locality in mind.
+
+  * <<<UUIDVersion6Delegate>>> -- uses the standard Type 6 UUID format which was designed with database locality in mind.
 
   * <<<UIDVersion1Delegate>>> (deprecated) -- uses a modified/non-standard Type 1 UUID format to improve database locality.
 
@@ -69,11 +71,18 @@ private final IdentifierService identifierService = new UUIDIdentifierService(ne
 private IdentifierService identifierService;
 -------------------
 
-  * The Type 6 UUIDs are used by default. If you want to use the now deprecated modified Type 1 UUIDs then you will need to override the following property:
+  * Type 7 UUIDs are used by default. If you want to use the now deprecated modified Type 1 UUIDs then you will need to override the following property:
 
 -------------------
 buralotech.identifier.generator=v1
 -------------------
+
+  * Type 6 UUIDs are also supported and can be used by setting the same property as follows:
+
+----
+buralotech.identifier.generator=v6
+----
+
 
 * Generating identifiers
 
@@ -108,7 +117,7 @@ var id = identifierService.fromBinary(bytes);
 
 * Working with timestamps
 
-  * Type 1 and Type 6 UUIDs contain the timestamp of the generation time. This means the identifier can do double duty since it is both the unique identifier and the creation date/time.
+  * Type 1, Type 6 and Type 7 UUIDs contain the timestamp of the generation time. This means the identifier can do double duty since it is both the unique identifier and the creation date/time.
 
   * You can extract the timestamp from the identifier using <<<IdentifierService.toInstant(Identifier)>>>.
 
