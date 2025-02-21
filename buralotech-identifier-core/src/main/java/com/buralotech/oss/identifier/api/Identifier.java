@@ -1,5 +1,5 @@
 /*
- *  Copyright 2022 Búraló Technologies
+ *  Copyright 2022-2025 Búraló Technologies
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  *
  */
 package com.buralotech.oss.identifier.api;
+
+import java.util.HexFormat;
 
 /**
  * And identifier has a textual and binary representation.
@@ -34,4 +36,13 @@ public interface Identifier extends Comparable<Identifier> {
      * @return The binary representation.
      */
     byte[] binary();
+
+    /**
+     * Get the hexadecimal representation of the identifier.
+     *
+     * @return The hexadecimal representation.
+     */
+    default String hex() {
+        return HexFormat.of().formatHex(binary());
+    }
 }

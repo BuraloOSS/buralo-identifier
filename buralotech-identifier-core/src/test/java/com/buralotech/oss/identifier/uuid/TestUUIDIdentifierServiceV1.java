@@ -1,5 +1,5 @@
 /*
- *  Copyright 2022 Búraló Technologies
+ *  Copyright 2022-2025 Búraló Technologies
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -73,21 +73,39 @@ class TestUUIDIdentifierServiceV1 {
 
     static Stream<Arguments> goodIdentifiers() {
         return Stream.of(
-                arguments("3TnesPWMmyqTHniq6DPq0F", new byte[]{17, -20, -22, -31, -88, 87, -53, -19, -98, 75, 59, -74, 28, -26, -74, 5}),
-                arguments("3TnesPWMmyuTHniq6DPq0F", new byte[]{17, -20, -22, -31, -88, 87, -53, -18, -98, 75, 59, -74, 28, -26, -74, 5})
+                arguments("3TnesPWMmyqTHniq6DPq0F", "11eceae1a857cbed9e4b3bb61ce6b605", new byte[]{17, -20, -22, -31, -88, 87, -53, -19, -98, 75, 59, -74, 28, -26, -74, 5}),
+                arguments("3TnesPWMmyuTHniq6DPq0F", "11eceae1a857cbee9e4b3bb61ce6b605", new byte[]{17, -20, -22, -31, -88, 87, -53, -18, -98, 75, 59, -74, 28, -26, -74, 5})
         );
     }
 
     @ParameterizedTest
     @MethodSource("goodIdentifiers")
-    void parseGoodTextRepresentations(final String text, final byte[] binary) {
-        assertThat(identifierService.fromText(text)).isEqualTo(new UUIDIdentifier(text, binary));
+    void parseGoodTextRepresentations(final String text, final String hexString, final byte[] binary) {
+        final var id = identifierService.fromText(text);
+        assertThat(id).isEqualTo(new UUIDIdentifier(text, binary));
+        assertThat(id.text()).isEqualTo(text);
+        assertThat(id.hex()).isEqualTo(hexString);
+        assertThat(id.binary()).isEqualTo(binary);
     }
 
     @ParameterizedTest
     @MethodSource("goodIdentifiers")
-    void parseGoodBinaryRepresentations(final String text, final byte[] binary) {
-        assertThat(identifierService.fromText(text)).isEqualTo(new UUIDIdentifier(text, binary));
+    void parseGoodBinaryRepresentations(final String text, final String hexString, final byte[] binary) {
+        final var id = identifierService.fromBinary(binary);
+        assertThat(id).isEqualTo(new UUIDIdentifier(text, binary));
+        assertThat(id.text()).isEqualTo(text);
+        assertThat(id.hex()).isEqualTo(hexString);
+        assertThat(id.binary()).isEqualTo(binary);
+    }
+
+    @ParameterizedTest
+    @MethodSource("goodIdentifiers")
+    void parseGoodHexRepresentations(final String text, final String hexString, final byte[] binary) {
+        final var id = identifierService.fromBinary(hexString);
+        assertThat(id).isEqualTo(new UUIDIdentifier(text, binary));
+        assertThat(id.text()).isEqualTo(text);
+        assertThat(id.hex()).isEqualTo(hexString);
+        assertThat(id.binary()).isEqualTo(binary);
     }
 
     @ParameterizedTest
@@ -102,6 +120,18 @@ class TestUUIDIdentifierServiceV1 {
     })
     void rejectBadTextualRepresentation(final String text) {
         assertThatThrownBy(() -> identifierService.fromText(text))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {
+            "",
+            "0",
+            "xy"
+    })
+    void rejectBadHexRepresentation(final String hexString) {
+        assertThatThrownBy(() -> identifierService.fromBinary(hexString))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -126,7 +156,7 @@ class TestUUIDIdentifierServiceV1 {
     @Test
     void extractInstant() {
         final var identifier = identifierService.generate();
-         assertThat(identifierService.toInstant(identifier)).isCloseTo(Instant.now(), within(1, ChronoUnit.SECONDS));
+        assertThat(identifierService.toInstant(identifier)).isCloseTo(Instant.now(), within(1, ChronoUnit.SECONDS));
     }
 
     static Stream<Arguments> checkInstant() {

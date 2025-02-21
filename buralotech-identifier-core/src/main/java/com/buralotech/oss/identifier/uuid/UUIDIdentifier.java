@@ -1,5 +1,5 @@
 /*
- *  Copyright 2022 Búraló Technologies
+ *  Copyright 2022-2025 Búraló Technologies
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package com.buralotech.oss.identifier.uuid;
 import com.buralotech.oss.identifier.api.Identifier;
 
 import java.util.Arrays;
+import java.util.HexFormat;
 import java.util.Objects;
 
 /**
@@ -28,6 +29,16 @@ import java.util.Objects;
  * @param binary The binary representation.
  */
 public record UUIDIdentifier(String text, byte[] binary) implements Identifier {
+
+    /**
+     * Alternative constructor that initialises the binary representation by parsing a hexadecimal string.
+     *
+     * @param text The textual representation.
+     * @param hex  The hexadecimal representation of the binary.
+     */
+    public UUIDIdentifier(String text, String hex) {
+        this(text, HexFormat.of().parseHex(hex));
+    }
 
     /**
      * Determine if two identifiers are equivalent.

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2022 Búraló Technologies
+ *  Copyright 2022-2025 Búraló Technologies
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package com.buralotech.oss.identifier.api;
 
 import java.time.Instant;
 import java.time.temporal.Temporal;
+import java.util.HexFormat;
 
 /**
  * Generate identifiers and parse binary and textual representations of identifiers.
@@ -48,6 +49,20 @@ public interface IdentifierService {
      * @throws IllegalArgumentException If the binary representation is not valid.
      */
     Identifier fromBinary(byte[] binary);
+
+    /**
+     * Decode an identifier using its hexadecimal representation.
+     *
+     * @param hexString The hexadecimal representation.
+     * @return The identifier.
+     * @throws IllegalArgumentException If the binary representation is not valid.
+     */
+    default Identifier fromBinary(final String hexString) {
+        if (hexString == null) {
+            throw new IllegalArgumentException("invalid binary representation of identifier");
+        }
+        return fromBinary(HexFormat.of().parseHex(hexString));
+    }
 
     /**
      * Extract an instant from an identifier.
