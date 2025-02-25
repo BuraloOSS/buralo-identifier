@@ -62,21 +62,6 @@ public record UUIDIdentifier(String text, byte[] binary) implements Identifier {
     }
 
     /**
-     * Compare based on the binary representation.
-     *
-     * @param other the object to be compared.
-     * @return <ul>
-     * <li>0 - if the two identifiers are equivalent</li>
-     * <li>&lt; 0 - </li>
-     * <li>&gt; 0 - </li>
-     * </ul>
-     */
-    @Override
-    public int compareTo(final Identifier other) {
-        return Arrays.compareUnsigned(binary, other.binary());
-    }
-
-    /**
      * Get a string representation.
      *
      * @return The string representation.

@@ -16,6 +16,7 @@
  */
 package com.buralotech.oss.identifier.api;
 
+import java.util.Arrays;
 import java.util.HexFormat;
 
 /**
@@ -44,5 +45,20 @@ public interface Identifier extends Comparable<Identifier> {
      */
     default String hex() {
         return HexFormat.of().formatHex(binary());
+    }
+
+    /**
+     * Compare based on the binary representation.
+     *
+     * @param other the object to be compared.
+     * @return <ul>
+     * <li>0 - if the two identifiers are equivalent</li>
+     * <li>&lt; 0 - </li>
+     * <li>&gt; 0 - </li>
+     * </ul>
+     */
+    @Override
+    default int compareTo(final Identifier other) {
+        return Arrays.compareUnsigned(binary(), other.binary());
     }
 }
