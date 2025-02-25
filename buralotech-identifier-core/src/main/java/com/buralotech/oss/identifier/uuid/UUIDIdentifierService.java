@@ -79,7 +79,6 @@ public final class UUIDIdentifierService implements IdentifierService {
      * epoch is 1 January 1970.
      */
     private static final long EPOCH_ADJ = 122192928000000000L;
-//    private static final long EPOCH_ADJ = 122192910170000000L;
 
     /**
      * Delegate that encapsulates logic that is specific to the UUID format.
