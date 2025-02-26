@@ -18,7 +18,10 @@ package com.buralotech.oss.identifier.spring;
 
 import com.buralotech.oss.identifier.api.IdentifierService;
 import com.buralotech.oss.identifier.uuid.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -64,5 +67,19 @@ public class IdentifierConfig {
     @ConditionalOnProperty(name = "buralotech.identifier.generator", havingValue = "v1")
     UUIDVersionDelegate version1Delegate() {
         return new UUIDVersion1Delegate();
+    }
+
+    /**
+     * Constructs a customizer that applies the module containing the custom serializer and deserializers for
+     * identifiers during the construction of Jackson object mappers.
+     *
+     * @param identifierService Required to convert textual representations to identifiers.
+     * @return The customizer.
+     */
+    @Bean
+    @ConditionalOnClass(ObjectMapper.class)
+    Jackson2ObjectMapperBuilderCustomizer identifierJacksonCustomizer(final IdentifierService identifierService) {
+        return jacksonObjectMapperBuilder -> jacksonObjectMapperBuilder
+                .modulesToInstall(modules -> modules.add(new IdentifierJacksonModule(identifierService)));
     }
 }

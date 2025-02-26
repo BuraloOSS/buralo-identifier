@@ -20,7 +20,7 @@
 
     <groupId>com.buralotech.oss.identifier</groupId>
     <artifactId>buralotech-identifier</artifactId>
-    <version>1.4.3-SNAPSHOT</version>
+    <version>1.5.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Búraló Technologies Identifier</name>
