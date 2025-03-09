@@ -83,6 +83,8 @@ buralotech.identifier.generator=v1
 buralotech.identifier.generator=v6
 ----
 
+  []
+
 
 * Generating identifiers
 
@@ -122,6 +124,41 @@ var id = identifierService.fromBinary(bytes);
   * You can extract the timestamp from the identifier using <<<IdentifierService.toInstant(Identifier)>>>.
 
   * If you want to search for entities created with a certain time window you can us <<<IdentifierService.asLowerBound(Temporal)>>> and <<<IdentifierService.asUpperBound(Temporal)>>> to get identifiers to use in the range query.
+
+* Property based testing
+
+  Integration with the {{{https://jqwik.net/}jqwik}} property based testing framework was added in version 1.5.1.
+
+  * Add the following dependency:
+
+-------------------
+<dependency>
+    <groupId>${project.groupId}</groupId>
+    <artifactId>buralotech-identifier-jqwik</artifactId>
+    <version>${project.version}</version>
+    <scope>test</scope>
+</dependency>
+-------------------
+
+  * Then you can inject values by just using the <<<@Property>>> and <<<@ForAll>>> annotations:
+
+-------------------
+@Property
+void someTest(@ForAll Identifier id) {
+    // ...
+}
+-------------------
+
+  * By default, Type 7 based identifiers are generated. You can add the <<<@IdentifierParam>>> annotation to explicitly specify one of Type 1, 6 or 7.
+
+-------------------
+@Property
+void someTest(@ForAll @IdentifierParam(version = 6) Identifier id) {
+    // ...
+}
+-------------------
+
+  []
 
 * License & Source Code
 
