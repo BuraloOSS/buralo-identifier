@@ -66,7 +66,7 @@ class TestUUIDIdentifierServiceV7 {
         final var id1 = identifierService.generate();
         Thread.sleep(2);
         final var id2 = identifierService.generate();
-                                                                                                                                                                                                                                                                                                                                                                           assertThat(id1).isLessThan(id2);
+        assertThat(id1).isLessThan(id2);
         assertThat(id2).isGreaterThan(id1);
     }
 
@@ -77,8 +77,8 @@ class TestUUIDIdentifierServiceV7 {
         final var id2 = identifierService.generate();
         assertThat(id1.text()).isLessThan(id2.text());
         assertThat(id2.text()).isGreaterThan(id1.text());
-        assertThat(Arrays.compare(id1.binary(), id2.binary())).isNegative();
-        assertThat(Arrays.compare(id2.binary(), id1.binary())).isPositive();
+        assertThat(Arrays.compareUnsigned(id1.binary(), id2.binary())).isNegative();
+        assertThat(Arrays.compareUnsigned(id2.binary(), id1.binary())).isPositive();
     }
 
 
@@ -211,12 +211,11 @@ class TestUUIDIdentifierServiceV7 {
     void checkInstant(final String text, final long millis) {
         final var identifier = identifierService.fromText(text);
         final var instant = Instant.ofEpochMilli(millis);
-        System.out.println(identifierService.toInstant(identifier).toEpochMilli());
         assertThat(identifierService.toInstant(identifier)).isCloseTo(instant, within(1, ChronoUnit.SECONDS));
     }
 
     @Test
-    public void testInstantBounds() {
+    void testInstantBounds() {
         final var now = Instant.now();
         final var lower = identifierService.asLowerBound(now);
         final var upper = identifierService.asUpperBound(now);
@@ -227,7 +226,7 @@ class TestUUIDIdentifierServiceV7 {
     }
 
     @Test
-    public void testLocalDateBounds() {
+    void testLocalDateBounds() {
         final var now = LocalDate.now();
         final var lower = identifierService.asLowerBound(now);
         final var upper = identifierService.asUpperBound(now);
@@ -240,7 +239,7 @@ class TestUUIDIdentifierServiceV7 {
     }
 
     @Test
-    public void testLocalDateTimeBounds() {
+    void testLocalDateTimeBounds() {
         final var now = LocalDateTime.now();
         final var lower = identifierService.asLowerBound(now);
         final var upper = identifierService.asUpperBound(now);
@@ -253,7 +252,7 @@ class TestUUIDIdentifierServiceV7 {
     }
 
     @Test
-    public void testOffsetDateTimeBounds() {
+    void testOffsetDateTimeBounds() {
         final var now = OffsetDateTime.now();
         final var lower = identifierService.asLowerBound(now);
         final var upper = identifierService.asUpperBound(now);
@@ -266,7 +265,7 @@ class TestUUIDIdentifierServiceV7 {
     }
 
     @Test
-    public void testZonedDateTimeBounds() {
+    void testZonedDateTimeBounds() {
         final var now = ZonedDateTime.now();
         final var lower = identifierService.asLowerBound(now);
         final var upper = identifierService.asUpperBound(now);
@@ -288,8 +287,8 @@ class TestUUIDIdentifierServiceV7 {
 
     @ParameterizedTest
     @MethodSource
-    public void convertListOfIdentifiersToText(final List<Identifier> inputs,
-                                               final List<String> expected) {
+    void convertListOfIdentifiersToText(final List<Identifier> inputs,
+                                        final List<String> expected) {
         assertThat(identifierService.toText(inputs)).isEqualTo(expected);
     }
 
@@ -303,8 +302,8 @@ class TestUUIDIdentifierServiceV7 {
 
     @ParameterizedTest
     @MethodSource
-    public void convertListOfIdentifiersToBinary(final List<Identifier> inputs,
-                                                 final List<byte[]> expected) {
+    void convertListOfIdentifiersToBinary(final List<Identifier> inputs,
+                                          final List<byte[]> expected) {
         assertThat(identifierService.toBinary(inputs)).isEqualTo(expected);
     }
 
@@ -348,8 +347,8 @@ class TestUUIDIdentifierServiceV7 {
 
     @ParameterizedTest
     @MethodSource
-    public void convertSetOfIdentifiersToText(final Set<Identifier> inputs,
-                                              final Set<String> expected) {
+    void convertSetOfIdentifiersToText(final Set<Identifier> inputs,
+                                       final Set<String> expected) {
         assertThat(identifierService.toText(inputs)).isEqualTo(expected);
     }
 
@@ -363,8 +362,8 @@ class TestUUIDIdentifierServiceV7 {
 
     @ParameterizedTest
     @MethodSource
-    public void convertSetOfIdentifiersToBinary(final Set<Identifier> inputs,
-                                                final Set<byte[]> expected) {
+    void convertSetOfIdentifiersToBinary(final Set<Identifier> inputs,
+                                         final Set<byte[]> expected) {
         assertThat(identifierService.toBinary(inputs)).isEqualTo(expected);
     }
 
