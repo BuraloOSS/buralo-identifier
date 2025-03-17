@@ -22,6 +22,7 @@ import com.buralotech.oss.identifier.api.IdentifierService;
 import java.time.*;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
+import java.util.UUID;
 
 /**
  * Generate identifiers and parse binary and textual representations of identifiers. The generator uses either a Type 1
@@ -134,6 +135,28 @@ public final class UUIDIdentifierService implements IdentifierService {
         }
         final var text = encode(binary);
         return new UUIDIdentifier(text, binary);
+    }
+
+    /**
+     * Create an identifier from a UUID string.
+     *
+     * @param uuid The UUID string.
+     * @return The identifier.
+     */
+    @Override
+    public Identifier fromUUID(final String uuid) {
+        return fromBinary(uuid.replace("-", ""));
+    }
+
+    /**
+     * Create an identifier from a UUID.
+     *
+     * @param uuid The UUID.
+     * @return The identifier.
+     */
+    @Override
+    public Identifier fromUUID(UUID uuid) {
+        return fromBinary(uuid.toString().replace("-", ""));
     }
 
     /**

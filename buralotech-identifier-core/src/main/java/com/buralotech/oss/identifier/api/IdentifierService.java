@@ -22,6 +22,8 @@ import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toUnmodifiableMap;
 import static java.util.stream.Collectors.toUnmodifiableSet;
@@ -37,6 +39,16 @@ public interface IdentifierService {
      * @return The generated identifier.
      */
     Identifier generate();
+
+    /**
+     * Generate a list of identifiers using an underlying UUID generator.
+     *
+     * @param n The number of identifiers to generate.
+     * @return The list of identifiers.
+     */
+    default List<Identifier> generate(int n) {
+        return Stream.generate(this::generate).limit(n).toList();
+    }
 
     /**
      * Decode an identifier using its text representation.
@@ -55,6 +67,26 @@ public interface IdentifierService {
      * @throws IllegalArgumentException If the binary representation is not valid.
      */
     Identifier fromBinary(byte[] binary);
+
+    /**
+     * Create an identifier from a UUID string.
+     *
+     * @param uuid The UUID string.
+     * @return The identifier.
+     */
+    default Identifier fromUUID(final String uuid) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Create an identifier from a UUID.
+     *
+     * @param uuid The UUID.
+     * @return The identifier.
+     */
+    default Identifier fromUUID(UUID uuid) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Decode an identifier using its hexadecimal representation.
@@ -258,5 +290,4 @@ public interface IdentifierService {
                 ? null
                 : map.entrySet().stream().collect(toUnmodifiableMap(e -> e.getKey().binary(), Map.Entry::getValue));
     }
-
 }
