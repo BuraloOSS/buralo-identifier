@@ -57,16 +57,6 @@ class TestUUIDIdentifierServiceV4 {
 
     @Test
     void generatedIdentifierIsConsistent() {
-        var id = identifierService.generate();
-        System.out.println(id.text());
-        System.out.println(id.hex());
-        for (int i = 0; i < 16; i++) {
-            if (i != 0) {
-                System.out.print(",");
-            }
-            System.out.print(id.binary()[i]);
-        }
-        System.out.println();
         assertThat(identifierService.generate())
                 .satisfies(identifier -> {
                     assertThat(identifierService.fromBinary(identifier.binary())).isEqualTo(identifier);
