@@ -36,7 +36,9 @@ public interface UUIDVersionDelegate {
      * @param binary The binary representation of the UUID.
      * @return The timestamp as an Instant.
      */
-    Instant toInstant(byte[] binary);
+    default Instant toInstant(byte[] binary) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Create a UUID as a byte array from a timestamp.
@@ -45,5 +47,7 @@ public interface UUIDVersionDelegate {
      * @param suffix The second portion of the UUID.
      * @return The UUID as a byte array.
      */
-    byte[] fromTicks(long ticks, long suffix);
+    default byte[] fromTicks(long ticks, long suffix) {
+        throw new UnsupportedOperationException();
+    }
 }
