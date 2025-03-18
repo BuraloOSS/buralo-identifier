@@ -219,21 +219,6 @@ class TestUUIDIdentifierServiceV7 {
         assertThat(identifierService.toInstant(null)).isNull();
     }
 
-    @Test
-    void extractInstantFromUnsupportedType() {
-        assertThatThrownBy(() -> identifierService.toInstant(new Identifier() {
-            @Override
-            public String text() {
-                return "";
-            }
-
-            @Override
-            public byte[] binary() {
-                return new byte[0];
-            }
-        })).isInstanceOf(IllegalArgumentException.class);
-    }
-
     static Stream<Arguments> checkInstant() {
         return Stream.of(
                 arguments("-OF3q6mRRmyub9IAHFj09V", 1735248084124L),

@@ -200,21 +200,6 @@ class TestUUIDIdentifierServiceV4 {
     }
 
     @Test
-    void extractInstantFromUnsupportedType() {
-        assertThatThrownBy(() -> identifierService.toInstant(new Identifier() {
-            @Override
-            public String text() {
-                return "";
-            }
-
-            @Override
-            public byte[] binary() {
-                return new byte[0];
-            }
-        })).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
     void testInstantBounds() {
         final var now = Instant.now();
         assertThatThrownBy(() -> identifierService.asLowerBound(now))

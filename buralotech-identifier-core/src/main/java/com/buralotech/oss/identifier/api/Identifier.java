@@ -53,18 +53,14 @@ public interface Identifier extends Comparable<Identifier> {
      *
      * @return The UUID.
      */
-    default UUID uuid() {
-        throw new UnsupportedOperationException();
-    }
+    UUID uuid();
 
     /**
      * Get the identifier as a UUID string.
      *
      * @return The UUID string.
      */
-    default String uuidString() {
-        throw new UnsupportedOperationException();
-    }
+    String uuidString();
 
     /**
      * Compare based on the binary representation.

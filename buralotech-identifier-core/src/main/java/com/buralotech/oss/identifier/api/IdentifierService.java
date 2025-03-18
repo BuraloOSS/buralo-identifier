@@ -101,9 +101,7 @@ public interface IdentifierService {
      * @param uuid The UUID string.
      * @return The identifier.
      */
-    default Identifier fromUUID(final String uuid) {
-        throw new UnsupportedOperationException();
-    }
+    Identifier fromUUID(final String uuid);
 
     /**
      * Create an identifier from a UUID.
@@ -111,9 +109,7 @@ public interface IdentifierService {
      * @param uuid The UUID.
      * @return The identifier.
      */
-    default Identifier fromUUID(UUID uuid) {
-        throw new UnsupportedOperationException();
-    }
+    Identifier fromUUID(UUID uuid);
 
     /**
      * Decode an identifier using its hexadecimal representation.
@@ -136,9 +132,7 @@ public interface IdentifierService {
      * @return The instant.
      * @throws UnsupportedOperationException If the operation is not supported.
      */
-    default Instant toInstant(final Identifier identifier) {
-        throw new UnsupportedOperationException("Cannot extract timestamp from " + identifier);
-    }
+    Instant toInstant(Identifier identifier);
 
     /**
      * Generate a lower-bound identifier for temporal value that can be used in range queries.
@@ -150,9 +144,7 @@ public interface IdentifierService {
      * @throws UnsupportedOperationException If the operation is not supported for the identifier type.
      * @throws IllegalArgumentException      If the temporal type is not supported.
      */
-    default Identifier asLowerBound(final Temporal time) {
-        throw new UnsupportedOperationException("Cant generate lower-bound identifier for " + time);
-    }
+    Identifier asLowerBound(Temporal time);
 
     /**
      * Generate an upper-bound identifier for temporal value that can be used in range queries.
@@ -164,9 +156,7 @@ public interface IdentifierService {
      * @throws UnsupportedOperationException If the operation is not supported for the identifier type.
      * @throws IllegalArgumentException      If the temporal type is not supported.
      */
-    default Identifier asUpperBound(final Temporal time) {
-        throw new UnsupportedOperationException("Cant generate upper-bound identifier for " + time);
-    }
+    Identifier asUpperBound(Temporal time);
 
     /**
      * Decode a list of identifier using text representations.
