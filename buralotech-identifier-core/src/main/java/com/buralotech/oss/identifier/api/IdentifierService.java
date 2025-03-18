@@ -16,6 +16,7 @@
  */
 package com.buralotech.oss.identifier.api;
 
+import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.time.temporal.Temporal;
 import java.util.HexFormat;
@@ -46,8 +47,17 @@ public interface IdentifierService {
      * @param n The number of identifiers to generate.
      * @return The list of identifiers.
      */
-    default List<Identifier> generate(int n) {
-        return Stream.generate(this::generate).limit(n).toList();
+    default List<Identifier> generateList(int n) {
+        return generateStream().limit(n).toList();
+    }
+
+    /**
+     * Generate a stream of identifiers using an underlying UUID generator.
+     *
+     * @return The list of identifiers.
+     */
+    default Stream<Identifier> generateStream() {
+        return Stream.generate(this::generate);
     }
 
     /**
@@ -67,6 +77,23 @@ public interface IdentifierService {
      * @throws IllegalArgumentException If the binary representation is not valid.
      */
     Identifier fromBinary(byte[] binary);
+
+    /**
+     * Decode an identifier using its binary representation starting at an offset.
+     *
+     * @param binary The binary representation.
+     * @param offset The position in the byte array from which to read.
+     * @return The identifier.
+     */
+    Identifier fromBinary(byte[] binary, int offset);
+
+    /**
+     * Decode an identifier using its binary representation from a {@link ByteBuffer}.
+     *
+     * @param buffer Contains the binary representation of the identifier.
+     * @return The identifier.
+     */
+    Identifier fromByteBuffer(ByteBuffer buffer);
 
     /**
      * Create an identifier from a UUID string.

@@ -37,7 +37,7 @@ class IdentifierConfigTest {
 
     private static Stream<Arguments> verifyBeans() {
         return Stream.of(
-                arguments("v1", UUIDVersion1Delegate.class),
+                arguments("v4", UUIDVersion4Delegate.class),
                 arguments("v6", UUIDVersion6Delegate.class),
                 arguments("v7", UUIDVersion7Delegate.class)
         );

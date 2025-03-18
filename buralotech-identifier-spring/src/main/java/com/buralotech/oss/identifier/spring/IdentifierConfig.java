@@ -64,9 +64,9 @@ public class IdentifierConfig {
     }
 
     @Bean
-    @ConditionalOnProperty(name = "buralotech.identifier.generator", havingValue = "v1")
-    UUIDVersionDelegate version1Delegate() {
-        return new UUIDVersion1Delegate();
+    @ConditionalOnProperty(name = "buralotech.identifier.generator", havingValue = "v4")
+    UUIDVersionDelegate version4Delegate() {
+        return new UUIDVersion4Delegate();
     }
 
     /**

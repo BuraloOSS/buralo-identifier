@@ -25,9 +25,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.security.SecureRandom;
 import java.time.*;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -36,6 +38,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class TestUUIDIdentifierServiceV4 {
+
+    private static final Random random = new SecureRandom();
 
     private static final String GOOD_ID1_STR = "zf3Wy94UIuel7UXWMryeIF";
 
@@ -64,6 +68,23 @@ class TestUUIDIdentifierServiceV4 {
                 });
     }
 
+    @Test
+    void generatedIdentifiersListIsConsistent() {
+        assertThat(identifierService.generateList(17))
+                .allSatisfy(identifier -> {
+                    assertThat(identifierService.fromBinary(identifier.binary())).isEqualTo(identifier);
+                    assertThat(identifierService.fromText(identifier.text())).isEqualTo(identifier);
+                });
+    }
+
+    @Test
+    void generatedIdentifiersStreamIsConsistent() {
+        assertThat(identifierService.generateStream().limit(17))
+                .allSatisfy(identifier -> {
+                    assertThat(identifierService.fromBinary(identifier.binary())).isEqualTo(identifier);
+                    assertThat(identifierService.fromText(identifier.text())).isEqualTo(identifier);
+                });
+    }
 
     static Stream<Arguments> goodIdentifiers() {
         return Stream.of(
@@ -86,6 +107,19 @@ class TestUUIDIdentifierServiceV4 {
     @MethodSource("goodIdentifiers")
     void parseGoodBinaryRepresentations(final String text, final String hexString, final byte[] binary) {
         final var id = identifierService.fromBinary(binary);
+        assertThat(id).isEqualTo(new UUIDIdentifier(text, binary));
+        assertThat(id.text()).isEqualTo(text);
+        assertThat(id.hex()).isEqualTo(hexString);
+        assertThat(id.binary()).isEqualTo(binary);
+    }
+
+    @ParameterizedTest
+    @MethodSource("goodIdentifiers")
+    void parseGoodBinaryRepresentationsInByteArray(final String text, final String hexString, final byte[] binary) {
+        final byte[] randomBinary = new byte[32];
+        random.nextBytes(randomBinary);
+        System.arraycopy(binary, 0, randomBinary, 8, 16);
+        final var id = identifierService.fromBinary(randomBinary, 8);
         assertThat(id).isEqualTo(new UUIDIdentifier(text, binary));
         assertThat(id.text()).isEqualTo(text);
         assertThat(id.hex()).isEqualTo(hexString);
@@ -154,8 +188,7 @@ class TestUUIDIdentifierServiceV4 {
     @Test
     void extractInstant() {
         final var identifier = identifierService.generate();
-        assertThatThrownBy(() -> identifierService.toInstant(identifier))
-                .isInstanceOf(UnsupportedOperationException.class);
+        assertThat( identifierService.toInstant(identifier)).isEqualTo(Instant.ofEpochMilli(0L));
     }
 
     @Test

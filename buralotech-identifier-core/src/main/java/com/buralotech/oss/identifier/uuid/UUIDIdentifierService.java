@@ -19,6 +19,7 @@ package com.buralotech.oss.identifier.uuid;
 import com.buralotech.oss.identifier.api.Identifier;
 import com.buralotech.oss.identifier.api.IdentifierService;
 
+import java.nio.ByteBuffer;
 import java.time.*;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
@@ -130,9 +131,55 @@ public final class UUIDIdentifierService implements IdentifierService {
      */
     @Override
     public Identifier fromBinary(final byte[] binary) {
-        if (binary == null || binary.length != 16 || !delegate.isValidBinary(binary)) {
+        if (binary == null || binary.length != 16 || !delegate.isValidBinary(binary, 0)) {
             throw new IllegalArgumentException("invalid binary representation of identifier");
         }
+        return doFromBinary(binary);
+    }
+
+    /**
+     * Decode an identifier using its binary representation starting at an offset.
+     *
+     * @param binary The binary representation.
+     * @param offset The position in the byte array from which to read.
+     * @return The identifier.
+     */
+    @Override
+    public Identifier fromBinary(final byte[] binary,
+                                 final int offset) {
+        if (binary == null || binary.length < offset + 16 || !delegate.isValidBinary(binary, offset)) {
+            throw new IllegalArgumentException("invalid binary representation of identifier");
+        }
+        return doFromBinary(Arrays.copyOfRange(binary, offset, offset + 16));
+    }
+
+    /**
+     * Decode an identifier using its binary representation from a {@link ByteBuffer}.
+     *
+     * @param buffer Contains the binary representation of the identifier.
+     * @return The identifier.
+     */
+    @Override
+    public Identifier fromByteBuffer(final ByteBuffer buffer) {
+        if (buffer == null || buffer.remaining() < 16) {
+            throw new IllegalArgumentException("invalid binary representation of identifier");
+        }
+        final var binary = new byte[16];
+        buffer.get(binary);
+        if (!delegate.isValidBinary(binary, 0)) {
+            throw new IllegalArgumentException("invalid binary representation of identifier");
+        }
+        return doFromBinary(binary);
+    }
+
+    /**
+     * Construct calculate the text representation and return an identifier encapsulating
+     * the binary and text representations.
+     *
+     * @param binary The binary representation.
+     * @return The identifier.
+     */
+    private Identifier doFromBinary(final byte[] binary) {
         final var text = encode(binary);
         return new UUIDIdentifier(text, binary);
     }
@@ -162,20 +209,20 @@ public final class UUIDIdentifierService implements IdentifierService {
     /**
      * Encode 16 bytes as 22 Base64 digit string.
      *
-     * @param bytes The 16 input bytes.
+     * @param bytes The input bytes.
      * @return The 22 digit Base64 string.
      */
     private String encode(final byte[] bytes) {
         assert bytes != null && bytes.length == 16;
         final var chars = new char[22];
-        var i = 0;
-        var j = 0;
+        var readPos = 0;
+        var writePos = 0;
         do {
-            encode3(bytes[i], bytes[i + 1], bytes[i + 2], chars, j);
-            i += 3;
-            j += 4;
-        } while (i < 15);
-        encode1(bytes[i], chars, j);
+            encode3(bytes[readPos], bytes[readPos + 1], bytes[readPos + 2], chars, writePos);
+            readPos += 3;
+            writePos += 4;
+        } while (readPos < 15);
+        encode1(bytes[readPos], chars, writePos);
         return new String(chars);
     }
 

@@ -18,9 +18,10 @@ public interface UUIDVersionDelegate {
      * Check that the binary representation is valid. The service has already checked that it is non-null and a valid length.
      *
      * @param binary The binary representation.
+     * @param offset The offset of the binary representation.
      * @return {@code true} if the binary representation is valid. Otherwise, {@code false}.
      */
-    boolean isValidBinary(byte[] binary);
+    boolean isValidBinary(byte[] binary, int offset);
 
     /**
      * Check that the text representation is valid. The service has already checked that it is non-null and a valid length.

@@ -18,6 +18,7 @@ package com.buralotech.oss.identifier.api;
 
 import java.util.Arrays;
 import java.util.HexFormat;
+import java.util.UUID;
 
 /**
  * And identifier has a textual and binary representation.
@@ -45,6 +46,24 @@ public interface Identifier extends Comparable<Identifier> {
      */
     default String hex() {
         return HexFormat.of().formatHex(binary());
+    }
+
+    /**
+     * Get the identifier as a UUID.
+     *
+     * @return The UUID.
+     */
+    default UUID uuid() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Get the identifier as a UUID string.
+     *
+     * @return The UUID string.
+     */
+    default String uuidString() {
+        throw new UnsupportedOperationException();
     }
 
     /**

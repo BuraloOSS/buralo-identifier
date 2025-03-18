@@ -17,10 +17,11 @@
 package com.buralotech.oss.identifier.uuid;
 
 import com.buralotech.oss.identifier.api.Identifier;
+import com.fasterxml.uuid.impl.UUIDUtil;
 
 import java.util.Arrays;
 import java.util.HexFormat;
-import java.util.Objects;
+import java.util.UUID;
 
 /**
  * And identifier has a textual and binary representation.
@@ -30,6 +31,7 @@ import java.util.Objects;
  */
 public record UUIDIdentifier(String text, byte[] binary) implements Identifier {
 
+
     /**
      * Alternative constructor that initialises the binary representation by parsing a hexadecimal string.
      *
@@ -38,6 +40,26 @@ public record UUIDIdentifier(String text, byte[] binary) implements Identifier {
      */
     public UUIDIdentifier(String text, String hex) {
         this(text, HexFormat.of().parseHex(hex));
+    }
+
+    /**
+     * Get the identifier as a UUID.
+     *
+     * @return The UUID.
+     */
+    @Override
+    public  UUID uuid() {
+        return UUIDUtil.uuid(binary());
+    }
+
+    /**
+     * Get the identifier as a UUID string.
+     *
+     * @return The UUID string.
+     */
+    @Override
+    public String uuidString() {
+        return uuid().toString();
     }
 
     /**
@@ -58,7 +80,7 @@ public record UUIDIdentifier(String text, byte[] binary) implements Identifier {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(text) * 31 + Arrays.hashCode(binary);
+        return Arrays.hashCode(binary);
     }
 
     /**
