@@ -32,32 +32,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static com.buralotech.oss.identifier.uuid.TestData.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class TestUUIDIdentifierServiceV7 {
 
     private static final Random random = new SecureRandom();
-
-    private static final String GOOD_ID1_STR = "-Tk3zAmZShTpkXSCMLOF2k";
-
-    private static final String GOOD_ID2_STR = "-Tk3zAmZUTLWhGW7ABHnNF";
-
-    private static final String GOOD_ID1_HEX = "01ec04fcbca476d7b5c2274d5d66500f";
-
-    private static final String GOOD_ID2_HEX = "01ec04fcbca47de5a1b518482cc4b361";
-
-    private static final String GOOD_ID1_UUID_STR = "01ec04fc-bca4-76d7-b5c2-274d5d66500f";
-
-    private static final String GOOD_ID2_UUID_STR = "01ec04fc-bca4-7de5-a1b5-18482cc4b361";
-
-    private static final byte[] GOOD_ID1_BIN = {1, -20, 4, -4, -68, -92, 118, -41, -75, -62, 39, 77, 93, 102, 80, 15};
-
-    private static final byte[] GOOD_ID2_BIN = {1, -20, 4, -4, -68, -92, 125, -27, -95, -75, 24, 72, 44, -60, -77, 97};
-
-    private static final Identifier GOOD_ID1 = new UUIDIdentifier(GOOD_ID1_STR, GOOD_ID1_BIN);
-
-    private static final Identifier GOOD_ID2 = new UUIDIdentifier(GOOD_ID2_STR, GOOD_ID2_BIN);
 
     private final IdentifierService identifierService = new UUIDIdentifierService(new UUIDVersion7Delegate());
 
@@ -111,8 +92,8 @@ class TestUUIDIdentifierServiceV7 {
 
     static Stream<Arguments> goodIdentifiers() {
         return Stream.of(
-                arguments(GOOD_ID1_STR, "01ec04fcbca476d7b5c2274d5d66500f", GOOD_ID1_BIN),
-                arguments(GOOD_ID2_STR, "01ec04fcbca47de5a1b518482cc4b361", GOOD_ID2_BIN)
+                arguments(GOOD_ID5_STR, "01ec04fcbca476d7b5c2274d5d66500f", GOOD_ID5_BIN),
+                arguments(GOOD_ID6_STR, "01ec04fcbca47de5a1b518482cc4b361", GOOD_ID6_BIN)
         );
     }
 
@@ -205,6 +186,24 @@ class TestUUIDIdentifierServiceV7 {
     @MethodSource
     void rejectBadBinaryRepresentation(final byte[] binary) {
         assertThatThrownBy(() -> identifierService.fromBinary(binary))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private static Stream<Arguments> rejectBadBinaryRepresentationInTheMiddle() {
+        return Stream.of(
+                arguments(2, null),
+                arguments(0, new byte[]{1, -20, 4, -4, -68, -92, 118, -41, -75, -62, 39, 77, 93, 102, 80}),
+                arguments(1, new byte[]{1, -20, 4, -4, -68, -92, 118, -41, -75, -62, 39, 77, 93, 102, 80, 15}),
+                arguments(4, new byte[]{0, 0, 0, 0, -2, -79, 33, -8, -95, 95, 79, -86, -79, 33, -8, -95, 95, 127, -86, 77, 0, 0, 0, 0}),
+                arguments(4, new byte[]{0, 0, 0, 0, 30, -8, 114, 14, -98, 88, 96, -28, -113, -105, 49, -119, 121, -87, -63, 5, 0, 0, 0, 0}));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void rejectBadBinaryRepresentationInTheMiddle(final int offset,
+                                                  final byte[] binary) {
+
+        assertThatThrownBy(() -> identifierService.fromBinary(binary, offset))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -304,7 +303,7 @@ class TestUUIDIdentifierServiceV7 {
 
     private static Stream<Arguments> convertListOfIdentifiersToText() {
         return Stream.of(
-                arguments(List.of(GOOD_ID1, GOOD_ID2), List.of(GOOD_ID1_STR, GOOD_ID2_STR)),
+                arguments(List.of(GOOD_ID5, GOOD_ID6), List.of(GOOD_ID5_STR, GOOD_ID6_STR)),
                 arguments(List.of(), List.of()),
                 arguments(null, null)
         );
@@ -319,7 +318,7 @@ class TestUUIDIdentifierServiceV7 {
 
     private static Stream<Arguments> convertListOfIdentifiersToBinary() {
         return Stream.of(
-                arguments(List.of(GOOD_ID1, GOOD_ID2), List.of(GOOD_ID1_BIN, GOOD_ID2_BIN)),
+                arguments(List.of(GOOD_ID5, GOOD_ID6), List.of(GOOD_ID5_BIN, GOOD_ID6_BIN)),
                 arguments(List.of(), List.of()),
                 arguments(null, null)
         );
@@ -334,7 +333,7 @@ class TestUUIDIdentifierServiceV7 {
 
     private static Stream<Arguments> convertListOfStringsToIdentifiers() {
         return Stream.of(
-                arguments(List.of(GOOD_ID1_STR, GOOD_ID2_STR), List.of(GOOD_ID1, GOOD_ID2)),
+                arguments(List.of(GOOD_ID5_STR, GOOD_ID6_STR), List.of(GOOD_ID5, GOOD_ID6)),
                 arguments(List.of(), List.of()),
                 arguments(null, List.of())
         );
@@ -349,7 +348,7 @@ class TestUUIDIdentifierServiceV7 {
 
     private static Stream<Arguments> convertListOfByteArraysToIdentifiers() {
         return Stream.of(
-                arguments(List.of(GOOD_ID1_BIN, GOOD_ID2_BIN), List.of(GOOD_ID1, GOOD_ID2)),
+                arguments(List.of(GOOD_ID5_BIN, GOOD_ID6_BIN), List.of(GOOD_ID5, GOOD_ID6)),
                 arguments(List.of(), List.of()),
                 arguments(null, List.of())
         );
@@ -364,7 +363,7 @@ class TestUUIDIdentifierServiceV7 {
 
     private static Stream<Arguments> convertSetOfIdentifiersToText() {
         return Stream.of(
-                arguments(Set.of(GOOD_ID1, GOOD_ID2), Set.of(GOOD_ID1_STR, GOOD_ID2_STR)),
+                arguments(Set.of(GOOD_ID5, GOOD_ID6), Set.of(GOOD_ID5_STR, GOOD_ID6_STR)),
                 arguments(Set.of(), Set.of()),
                 arguments(null, null)
         );
@@ -379,7 +378,7 @@ class TestUUIDIdentifierServiceV7 {
 
     private static Stream<Arguments> convertSetOfIdentifiersToBinary() {
         return Stream.of(
-                arguments(Set.of(GOOD_ID1, GOOD_ID2), Set.of(GOOD_ID1_BIN, GOOD_ID2_BIN)),
+                arguments(Set.of(GOOD_ID5, GOOD_ID6), Set.of(GOOD_ID5_BIN, GOOD_ID6_BIN)),
                 arguments(Set.of(), Set.of()),
                 arguments(null, null)
         );
@@ -394,7 +393,7 @@ class TestUUIDIdentifierServiceV7 {
 
     private static Stream<Arguments> convertSetOfStringsToIdentifiers() {
         return Stream.of(
-                arguments(Set.of(GOOD_ID1_STR, GOOD_ID2_STR), Set.of(GOOD_ID1, GOOD_ID2)),
+                arguments(Set.of(GOOD_ID5_STR, GOOD_ID6_STR), Set.of(GOOD_ID5, GOOD_ID6)),
                 arguments(Set.of(), Set.of()),
                 arguments(null, Set.of())
         );
@@ -409,7 +408,7 @@ class TestUUIDIdentifierServiceV7 {
 
     private static Stream<Arguments> convertSetOfByteArraysToIdentifiers() {
         return Stream.of(
-                arguments(Set.of(GOOD_ID1_BIN, GOOD_ID2_BIN), Set.of(GOOD_ID1, GOOD_ID2)),
+                arguments(Set.of(GOOD_ID5_BIN, GOOD_ID6_BIN), Set.of(GOOD_ID5, GOOD_ID6)),
                 arguments(Set.of(), Set.of()),
                 arguments(null, Set.of())
         );
@@ -426,7 +425,7 @@ class TestUUIDIdentifierServiceV7 {
         final var obj1 = new Object();
         final var obj2 = new Object();
         return Stream.of(
-                arguments(Map.of(GOOD_ID1_STR, obj1, GOOD_ID2_STR, obj2), Map.of(GOOD_ID1, obj1, GOOD_ID2, obj2)),
+                arguments(Map.of(GOOD_ID5_STR, obj1, GOOD_ID6_STR, obj2), Map.of(GOOD_ID5, obj1, GOOD_ID6, obj2)),
                 arguments(Map.of(), Map.of()),
                 arguments(null, Map.of())
         );
@@ -443,7 +442,7 @@ class TestUUIDIdentifierServiceV7 {
         final var obj1 = new Object();
         final var obj2 = new Object();
         return Stream.of(
-                arguments(Map.of(GOOD_ID1_BIN, obj1, GOOD_ID2_BIN, obj2), Map.of(GOOD_ID1, obj1, GOOD_ID2, obj2)),
+                arguments(Map.of(GOOD_ID5_BIN, obj1, GOOD_ID6_BIN, obj2), Map.of(GOOD_ID5, obj1, GOOD_ID6, obj2)),
                 arguments(Map.of(), Map.of()),
                 arguments(null, Map.of())
         );
@@ -460,7 +459,7 @@ class TestUUIDIdentifierServiceV7 {
         final var obj1 = new Object();
         final var obj2 = new Object();
         return Stream.of(
-                arguments(Map.of(GOOD_ID1, obj1, GOOD_ID2, obj2), Map.of(GOOD_ID1_STR, obj1, GOOD_ID2_STR, obj2)),
+                arguments(Map.of(GOOD_ID5, obj1, GOOD_ID6, obj2), Map.of(GOOD_ID5_STR, obj1, GOOD_ID6_STR, obj2)),
                 arguments(Map.of(), Map.of()),
                 arguments(null, null)
         );
@@ -477,7 +476,7 @@ class TestUUIDIdentifierServiceV7 {
         final var obj1 = new Object();
         final var obj2 = new Object();
         return Stream.of(
-                arguments(Map.of(GOOD_ID1, obj1, GOOD_ID2, obj2), Map.of(GOOD_ID1_BIN, obj1, GOOD_ID2_BIN, obj2)),
+                arguments(Map.of(GOOD_ID5, obj1, GOOD_ID6, obj2), Map.of(GOOD_ID5_BIN, obj1, GOOD_ID6_BIN, obj2)),
                 arguments(Map.of(), Map.of()),
                 arguments(null, null)
         );
@@ -493,8 +492,8 @@ class TestUUIDIdentifierServiceV7 {
     private static Stream<Arguments> canConvertUuidStringToIdentifier() {
         return Stream.of(
                 arguments(null, null),
-                arguments(GOOD_ID1_UUID_STR, GOOD_ID1),
-                arguments(GOOD_ID2_UUID_STR, GOOD_ID2));
+                arguments(GOOD_ID5_UUID_STR, GOOD_ID5),
+                arguments(GOOD_ID6_UUID_STR, GOOD_ID6));
     }
 
     @ParameterizedTest
@@ -508,8 +507,8 @@ class TestUUIDIdentifierServiceV7 {
     private static Stream<Arguments> canConvertUuidToIdentifier() {
         return Stream.of(
                 arguments(null, null),
-                arguments(UUID.fromString(GOOD_ID1_UUID_STR), GOOD_ID1),
-                arguments(UUID.fromString(GOOD_ID2_UUID_STR), GOOD_ID2));
+                arguments(UUID.fromString(GOOD_ID5_UUID_STR), GOOD_ID5),
+                arguments(UUID.fromString(GOOD_ID6_UUID_STR), GOOD_ID6));
     }
 
     @ParameterizedTest
@@ -522,10 +521,10 @@ class TestUUIDIdentifierServiceV7 {
     private static Stream<Arguments> cannotConvertInvalidUuidStringsToIdentifier() {
         return Stream.of(
                 arguments(""),
-                arguments(GOOD_ID1_STR),
-                arguments(GOOD_ID2_STR),
-                arguments(GOOD_ID1_HEX),
-                arguments(GOOD_ID2_HEX),
+                arguments(GOOD_ID5_STR),
+                arguments(GOOD_ID6_STR),
+                arguments(GOOD_ID5_HEX),
+                arguments(GOOD_ID6_HEX),
                 arguments(Generators.randomBasedGenerator().generate().toString()),
                 arguments(Generators.timeBasedReorderedGenerator().generate().toString()));
     }

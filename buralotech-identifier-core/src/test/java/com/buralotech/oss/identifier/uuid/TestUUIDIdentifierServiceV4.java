@@ -31,6 +31,7 @@ import java.time.*;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static com.buralotech.oss.identifier.uuid.TestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
@@ -38,26 +39,6 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 class TestUUIDIdentifierServiceV4 {
 
     private static final Random random = new SecureRandom();
-
-    private static final String GOOD_ID1_STR = "zf3Wy94UIuel7UXWMryeIF";
-
-    private static final String GOOD_ID2_STR = "l0bK5MCbHUmOpG_nOkbw4k";
-
-    private static final String GOOD_ID1_HEX = "feb121f8a15f4faab121f8a15f7faa4d";
-
-    private static final String GOOD_ID2_HEX = "c419d519736749fc99d519736709fc17";
-
-    private static final String GOOD_ID1_UUID_STR = "feb121f8-a15f-4faa-b121-f8a15f7faa4d";
-
-    private static final String GOOD_ID2_UUID_STR = "c419d519-7367-49fc-99d5-19736709fc17";
-
-    private static final byte[] GOOD_ID1_BIN = {-2, -79, 33, -8, -95, 95, 79, -86, -79, 33, -8, -95, 95, 127, -86, 77};
-
-    private static final byte[] GOOD_ID2_BIN = {-60, 25, -43, 25, 115, 103, 73, -4, -103, -43, 25, 115, 103, 9, -4, 23};
-
-    private static final Identifier GOOD_ID1 = new UUIDIdentifier(GOOD_ID1_STR, GOOD_ID1_BIN);
-
-    private static final Identifier GOOD_ID2 = new UUIDIdentifier(GOOD_ID2_STR, GOOD_ID2_BIN);
 
     private final IdentifierService identifierService = new UUIDIdentifierService(new UUIDVersion4Delegate());
 
@@ -184,6 +165,24 @@ class TestUUIDIdentifierServiceV4 {
     @MethodSource
     void rejectBadBinaryRepresentation(final byte[] binary) {
         assertThatThrownBy(() -> identifierService.fromBinary(binary))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private static Stream<Arguments> rejectBadBinaryRepresentationInTheMiddle() {
+        return Stream.of(
+                arguments(2, null),
+                arguments(0, new byte[]{-2, -79, 33, -8, -95, 95, 79, -86, -79, 33, -8, -95, 95, 127, -86}),
+                arguments(1, new byte[]{-2, -79, 33, -8, -95, 95, 79, -86, -79, 33, -8, -95, 95, 127, -86, 77}),
+                arguments(4, new byte[]{0, 0, 0, 0, 30, -8, 114, 14, -98, 88, 96, -28, -113, -105, 49, -119, 121, -87, -63, 5, 0, 0, 0, 0}),
+                arguments(4, new byte[]{0, 0, 0, 0, 1, -20, 4, -4, -68, -92, 118, -41, -75, -62, 39, 77, 93, 102, 80, 15, 0, 0, 0, 0}));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void rejectBadBinaryRepresentationInTheMiddle(final int offset,
+                                                  final byte[] binary) {
+
+        assertThatThrownBy(() -> identifierService.fromBinary(binary, offset))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
