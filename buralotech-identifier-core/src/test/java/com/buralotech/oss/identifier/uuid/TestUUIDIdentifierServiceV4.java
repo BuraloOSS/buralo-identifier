@@ -140,8 +140,10 @@ class TestUUIDIdentifierServiceV4 {
             "",
             "0",
             "xy",
-            "11eceae1a857cbed9e4b3bb61ce6b605",
-            "1ef8720e9e5860e48f97318979a9c105"
+            GOOD_ID3_HEX,
+            GOOD_ID4_HEX,
+            GOOD_ID5_HEX,
+            GOOD_ID6_HEX
     })
     void rejectBadHexRepresentation(final String hexString) {
         assertThatThrownBy(() -> identifierService.fromBinary(hexString))

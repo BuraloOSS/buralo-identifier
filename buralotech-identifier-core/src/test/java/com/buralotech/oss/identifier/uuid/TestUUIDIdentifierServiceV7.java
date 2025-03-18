@@ -92,8 +92,8 @@ class TestUUIDIdentifierServiceV7 {
 
     static Stream<Arguments> goodIdentifiers() {
         return Stream.of(
-                arguments(GOOD_ID5_STR, "01ec04fcbca476d7b5c2274d5d66500f", GOOD_ID5_BIN),
-                arguments(GOOD_ID6_STR, "01ec04fcbca47de5a1b518482cc4b361", GOOD_ID6_BIN)
+                arguments(GOOD_ID5_STR, GOOD_ID5_HEX, GOOD_ID5_BIN),
+                arguments(GOOD_ID6_STR, GOOD_ID6_HEX, GOOD_ID6_BIN)
         );
     }
 
@@ -161,8 +161,10 @@ class TestUUIDIdentifierServiceV7 {
             "",
             "0",
             "xy",
-            "11eceae1a857cbed9e4b3bb61ce6b605",
-            "1ef8720e9e5860e48f97318979a9c105"
+            GOOD_ID1_HEX,
+            GOOD_ID2_HEX,
+            GOOD_ID3_HEX,
+            GOOD_ID4_HEX
     })
     void rejectBadHexRepresentation(final String hexString) {
         assertThatThrownBy(() -> identifierService.fromBinary(hexString))
