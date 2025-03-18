@@ -26,6 +26,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.nio.ByteBuffer;
 import java.security.SecureRandom;
 import java.time.*;
 import java.util.*;
@@ -111,6 +112,16 @@ class TestUUIDIdentifierServiceV4 {
 
     @ParameterizedTest
     @MethodSource("goodIdentifiers")
+    void parseGoodBinaryRepresentationsInByteBuffer(final String text, final String hexString, final byte[] binary) {
+        final var id = identifierService.fromByteBuffer(ByteBuffer.wrap(binary));
+        assertThat(id).isEqualTo(new UUIDIdentifier(text, binary));
+        assertThat(id.text()).isEqualTo(text);
+        assertThat(id.hex()).isEqualTo(hexString);
+        assertThat(id.binary()).isEqualTo(binary);
+    }
+
+    @ParameterizedTest
+    @MethodSource("goodIdentifiers")
     void parseGoodHexRepresentations(final String text, final String hexString, final byte[] binary) {
         final var id = identifierService.fromBinary(hexString);
         assertThat(id).isEqualTo(new UUIDIdentifier(text, binary));
@@ -154,11 +165,11 @@ class TestUUIDIdentifierServiceV4 {
         return Stream.of(
                 arguments((Object) new byte[0]),
                 arguments((Object) new byte[]{17, -20, -22, -31, -88, 87, -53, -19, -98, 75, 59, -74, 28, -26, -74}),
-                arguments((Object) new byte[]{33, -20, -22, -31, -88, 87, -53, -19, -98, 75, 59, -74, 28, -26, -74, 5}),
-                arguments((Object) new byte[]{17, -20, -22, -31, -88, 87, -53, -19, -34, 75, 59, -74, 28, -26, -74, 5}),
                 arguments((Object) new byte[]{17, -20, -22, -31, -88, 87, -53, -19, -98, 75, 59, -74, 28, -26, -74, 5, 5}),
-                arguments((Object) new byte[]{30, -8, 114, 14, -98, 88, 96, -28, -113, -105, 49, -119, 121, -87, -63, 5}),
-                arguments((Object) new byte[]{30, -8, 114, 18, -37, -40, 99, -43, -113, -105, 49, -119, 121, -87, -63, 5})
+                arguments((Object) GOOD_ID3_BIN),
+                arguments((Object) GOOD_ID4_BIN),
+                arguments((Object) GOOD_ID5_BIN),
+                arguments((Object) GOOD_ID6_BIN)
         );
     }
 
@@ -167,6 +178,14 @@ class TestUUIDIdentifierServiceV4 {
     @MethodSource
     void rejectBadBinaryRepresentation(final byte[] binary) {
         assertThatThrownBy(() -> identifierService.fromBinary(binary))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @MethodSource("rejectBadBinaryRepresentation")
+    void rejectBadBinaryRepresentationFromByteBuffer(final byte[] binary) {
+        assertThatThrownBy(() -> identifierService.fromByteBuffer(binary == null ? null : ByteBuffer.wrap(binary)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
