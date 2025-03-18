@@ -64,7 +64,7 @@ class TestIdentifierArbitrary {
     }
 
     @Property
-    void withAnnotationV1(@ForAll @IdentifierParam(version = 1) Identifier id) {
+    void withAnnotationV1(@ForAll @IdentifierParam(version = 4) Identifier id) {
         assertThat(V4.isValidText(id.text())).isTrue();
     }
 
