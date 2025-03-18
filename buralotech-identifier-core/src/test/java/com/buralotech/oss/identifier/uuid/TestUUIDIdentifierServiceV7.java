@@ -18,6 +18,7 @@ package com.buralotech.oss.identifier.uuid;
 
 import com.buralotech.oss.identifier.api.Identifier;
 import com.buralotech.oss.identifier.api.IdentifierService;
+import com.fasterxml.uuid.Generators;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -41,6 +42,14 @@ class TestUUIDIdentifierServiceV7 {
     private static final String GOOD_ID1_STR = "-Tk3zAmZShTpkXSCMLOF2k";
 
     private static final String GOOD_ID2_STR = "-Tk3zAmZUTLWhGW7ABHnNF";
+
+    private static final String GOOD_ID1_HEX = "01ec04fcbca476d7b5c2274d5d66500f";
+
+    private static final String GOOD_ID2_HEX = "01ec04fcbca47de5a1b518482cc4b361";
+
+    private static final String GOOD_ID1_UUID_STR = "01ec04fc-bca4-76d7-b5c2-274d5d66500f";
+
+    private static final String GOOD_ID2_UUID_STR = "01ec04fc-bca4-7de5-a1b5-18482cc4b361";
 
     private static final byte[] GOOD_ID1_BIN = {1, -20, 4, -4, -68, -92, 118, -41, -75, -62, 39, 77, 93, 102, 80, 15};
 
@@ -494,5 +503,65 @@ class TestUUIDIdentifierServiceV7 {
     void convertByteArrayKeysInMapFromIdentifiers(final Map<Identifier, Object> inputs,
                                                   final Map<byte[], Object> expected) {
         assertThat(identifierService.toBinary(inputs)).isEqualTo(expected);
+    }
+
+    private static Stream<Arguments> canConvertUuidStringToIdentifier() {
+        return Stream.of(
+                arguments(null, null),
+                arguments(GOOD_ID1_UUID_STR, GOOD_ID1),
+                arguments(GOOD_ID2_UUID_STR, GOOD_ID2));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void canConvertUuidStringToIdentifier(final String uuidString,
+                                          final Identifier identifier) {
+        assertThat(identifierService.fromUUID(uuidString)).isEqualTo(identifier);
+
+    }
+
+    private static Stream<Arguments> canConvertUuidToIdentifier() {
+        return Stream.of(
+                arguments(null, null),
+                arguments(UUID.fromString(GOOD_ID1_UUID_STR), GOOD_ID1),
+                arguments(UUID.fromString(GOOD_ID2_UUID_STR), GOOD_ID2));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void canConvertUuidToIdentifier(final UUID uuid,
+                                    final Identifier identifier) {
+        assertThat(identifierService.fromUUID(uuid)).isEqualTo(identifier);
+    }
+
+    private static Stream<Arguments> cannotConvertInvalidUuidStringsToIdentifier() {
+        return Stream.of(
+                arguments(""),
+                arguments(GOOD_ID1_STR),
+                arguments(GOOD_ID2_STR),
+                arguments(GOOD_ID1_HEX),
+                arguments(GOOD_ID2_HEX),
+                arguments(Generators.randomBasedGenerator().generate().toString()),
+                arguments(Generators.timeBasedReorderedGenerator().generate().toString()));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void cannotConvertInvalidUuidStringsToIdentifier(final String uuidString) {
+        assertThatThrownBy(() -> identifierService.fromUUID(uuidString))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private static Stream<Arguments> cannotConvertInvalidUuidsToIdentifier() {
+        return Stream.of(
+                arguments(Generators.randomBasedGenerator().generate()),
+                arguments(Generators.timeBasedReorderedGenerator().generate()));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void cannotConvertInvalidUuidsToIdentifier(final UUID uuid) {
+        assertThatThrownBy(() -> identifierService.fromUUID(uuid))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }

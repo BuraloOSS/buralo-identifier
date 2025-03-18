@@ -24,6 +24,7 @@ import java.time.*;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 /**
  * Generate identifiers and parse binary and textual representations of identifiers. The generator uses either a Type 1
@@ -32,6 +33,11 @@ import java.util.UUID;
  * URL-safe base 64 encoding that is also sortable.
  */
 public final class UUIDIdentifierService implements IdentifierService {
+
+    /**
+     * Pattern used to verify UUID strings.
+     */
+    private static final Pattern UUID_PATTERN = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
 
     /**
      * Look-up table used during encoding.
@@ -192,6 +198,12 @@ public final class UUIDIdentifierService implements IdentifierService {
      */
     @Override
     public Identifier fromUUID(final String uuid) {
+        if (uuid == null) {
+            return null;
+        }
+        if (!UUID_PATTERN.matcher(uuid).matches()) {
+            throw new IllegalArgumentException("invalid UUID representation of identifier");
+        }
         return fromBinary(uuid.replace("-", ""));
     }
 
@@ -203,6 +215,9 @@ public final class UUIDIdentifierService implements IdentifierService {
      */
     @Override
     public Identifier fromUUID(UUID uuid) {
+        if (uuid == null) {
+            return null;
+        }
         return fromBinary(uuid.toString().replace("-", ""));
     }
 

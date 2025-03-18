@@ -18,7 +18,7 @@ package com.buralotech.oss.identifier.jqwik.impl;
 
 import com.buralotech.oss.identifier.api.Identifier;
 import com.buralotech.oss.identifier.jqwik.api.IdentifierParam;
-import com.buralotech.oss.identifier.uuid.UUIDVersion1Delegate;
+import com.buralotech.oss.identifier.uuid.UUIDVersion4Delegate;
 import com.buralotech.oss.identifier.uuid.UUIDVersion6Delegate;
 import com.buralotech.oss.identifier.uuid.UUIDVersion7Delegate;
 import net.jqwik.api.Arbitrary;
@@ -30,9 +30,9 @@ import java.util.Set;
 public class IdentifierArbitraryProvider implements ArbitraryProvider {
 
     /**
-     * Used for the now deprecated modified Type 1 identifier generation,
+     * Used for the now deprecated modified Type 4 identifier generation,
      */
-    private final static Arbitrary<Identifier> V1 = new DefaultIdentifierArbitrary(new UUIDVersion1Delegate());
+    private final static Arbitrary<Identifier> V4 = new DefaultIdentifierArbitrary(new UUIDVersion4Delegate());
 
     /**
      * Used for Type 6 identifier generation,
@@ -91,7 +91,7 @@ public class IdentifierArbitraryProvider implements ArbitraryProvider {
      */
     private static Arbitrary<Identifier> getIdentifierArbitrary(final int version) {
         return switch (version) {
-            case 1 -> V1;
+            case 4 -> V4;
             case 6 -> V6;
             case 7 -> V7;
             default -> V7;

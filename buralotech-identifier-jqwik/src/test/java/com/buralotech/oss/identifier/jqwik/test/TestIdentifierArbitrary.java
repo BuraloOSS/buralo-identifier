@@ -18,11 +18,14 @@ package com.buralotech.oss.identifier.jqwik.test;
 
 import com.buralotech.oss.identifier.api.Identifier;
 import com.buralotech.oss.identifier.jqwik.api.IdentifierParam;
-import com.buralotech.oss.identifier.uuid.UUIDVersion1Delegate;
+import com.buralotech.oss.identifier.uuid.UUIDVersion4Delegate;
 import com.buralotech.oss.identifier.uuid.UUIDVersion6Delegate;
 import com.buralotech.oss.identifier.uuid.UUIDVersion7Delegate;
 import com.buralotech.oss.identifier.uuid.UUIDVersionDelegate;
-import net.jqwik.api.*;
+import net.jqwik.api.ForAll;
+import net.jqwik.api.Group;
+import net.jqwik.api.Property;
+import net.jqwik.api.PropertyDefaults;
 
 import java.util.List;
 import java.util.Map;
@@ -38,7 +41,7 @@ class TestIdentifierArbitrary {
 
     private static final UUIDVersionDelegate V6 = new UUIDVersion6Delegate();
 
-    private static final UUIDVersionDelegate V1 = new UUIDVersion1Delegate();
+    private static final UUIDVersionDelegate V4 = new UUIDVersion4Delegate();
 
     @Property
     void withoutAnnotation(@ForAll Identifier id) {
@@ -62,7 +65,7 @@ class TestIdentifierArbitrary {
 
     @Property
     void withAnnotationV1(@ForAll @IdentifierParam(version = 1) Identifier id) {
-        assertThat(V1.isValidText(id.text())).isTrue();
+        assertThat(V4.isValidText(id.text())).isTrue();
     }
 
     @Property
