@@ -5,6 +5,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -77,6 +78,8 @@ class TestUUIDIdentifier {
         assertThat(id).isEqualTo(new UUIDIdentifier(text, binary));
         assertThat(new UUIDIdentifier(text, hex)).isEqualTo(id);
         assertThat(id).isEqualTo(new UUIDIdentifier(text, hex));
+        assertThat(id).isEqualTo(text);
+        assertThat(id).isEqualTo(binary);
     }
 
     private static Stream<Arguments> cannotCompareDifferentObjects() {

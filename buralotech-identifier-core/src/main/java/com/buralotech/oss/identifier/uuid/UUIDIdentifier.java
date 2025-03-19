@@ -70,7 +70,18 @@ public record UUIDIdentifier(String text, byte[] binary) implements Identifier {
      */
     @Override
     public boolean equals(final Object other) {
-        return (this == other) || (other instanceof UUIDIdentifier that && Arrays.equals(binary, that.binary));
+        if (this == other) {
+            return true;
+        }
+        if (other == null) {
+            return false;
+        }
+        return switch (other) {
+            case UUIDIdentifier that -> Arrays.equals(binary, that.binary);
+            case byte[] that -> Arrays.equals(binary, that);
+            case String that -> text.equals(that);
+            default ->  false;
+        };
     }
 
     /**
