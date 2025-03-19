@@ -17,7 +17,7 @@ This library was created using Java 21.
 <dependency>
     <groupId>com.buralotech.oss.identifier</groupId>
     <artifactId>buralotech-identifier-core</artifactId>
-    <version>1.5.1</version>
+    <version>2.0.0</version>
 </dependency>
 ----
 
@@ -25,14 +25,16 @@ This library was created using Java 21.
 +
 [source,java]
 ----
-private final IdentifierService identifierService = new UUIDIdentifierService(new UUIDVersion6Delegate());
+private final IdentifierService identifierService = new UUIDIdentifierService(new UUIDVersion7Delegate());
 ----
 
 The following delegates are available:
 
-* `UUIDVersion6Delegate` (recommended)-- uses the standard Type 6 UUID format which was designed with database locality in mind.
+* `UUIDVersion7Delegate` (recommended)-- uses the standard Type 7 UUID format which was designed with database locality in mind.
 
-* `UUIDVersion1Delegate` (deprecated) -- uses a modified/non-standard Type 1 UUID format to improve database locality.
+* `UUIDVersion6Delegate` -- uses the standard Type 6 UUID format which was designed with database locality in mind.
+
+* `UUIDVersion4Delegate` -- uses the standard Type 6 UUID format which is not recommended if database locality is important.
 
 == Spring Boot Usage
 
@@ -43,7 +45,7 @@ The following delegates are available:
 <dependency>
     <groupId>com.buralotech.oss.identifier</groupId>
     <artifactId>buralotech-identifier-core</artifactId>
-    <version>1.4.1</version>
+    <version>2.0.0</version>
 </dependency>
 ----
 +
@@ -52,7 +54,7 @@ The following delegates are available:
 <dependency>
     <groupId>com.buralotech.oss.identifier</groupId>
     <artifactId>buralotech-identifier-spring</artifactId>
-    <version>1.5.1</version>
+    <version>2.0.0</version>
 </dependency>
 ----
 
@@ -66,16 +68,18 @@ The following delegates are available:
 private IdentifierService identifierService;
 ----
 
-* Type 7 UUIDs are used by default. If you want to use the now deprecated modified Type 1 UUIDs then you will need to override the following property:
-+
-----
-buralotech.identifier.generator=v1
-----
+* Type 7 UUIDs are used by default. The previously deprecated modified Type 1 UUIDs are no longer supported.
 
 * Type 6 UUIDs are also supported and can be used by setting the same property as follows:
 +
 ----
 buralotech.identifier.generator=v6
+----
+
+* Type 3 UUIDs are also supported and can be used by setting the same property as follows:
++
+----
+buralotech.identifier.generator=v4
 ----
 
 == Generating identifiers
@@ -99,6 +103,12 @@ ps.setBytes(1, id.binary());
 
 * `id.text()` returns a 22 character URL-safe string that can be used in RESTful APIs as part of the URI path or in request/response payloads.
 
+* `id.hex()` returns a 32 character hexadecimal representation of the identifier.
+
+* `id.uuidString()` returns a 36 character UUID string representation of the identifier.
+
+* `id.uuid()` coverts the identifier to a UUID.
+
 == Parsing binary and text representations
 
 * If you read `byte[16]` from a `BINARY(16)` database column use the `identifierService.fromBinary(bytes
@@ -115,7 +125,7 @@ var id = identifierService.fromBinary(bytes);
 
 == Working with timestamps
 
-* Type 1, Type 6 and Type 6 UUIDs contain the timestamp of the generation time. This means the identifier can do double duty since it is both the unique identifier and the creation date/time.
+* Type 6 and Type 7 UUIDs contain the timestamp of the generation time. This means the identifier can do double duty since it is both the unique identifier and the creation date/time.
 
 * You can extract the timestamp from the identifier using `IdentifierService.toInstant(Identifier)`.
 
@@ -132,7 +142,7 @@ Integration with the https://jqwik.net/[jqwik] property based testing framework 
 <dependency>
     <groupId>com.buralotech.oss.identifier</groupId>
     <artifactId>buralotech-identifier-jqwik</artifactId>
-    <version>1.5.1</version>
+    <version>2.0.0</version>
     <scope>test</scope>
 </dependency>
 ----
@@ -147,7 +157,7 @@ void someTest(@ForAll Identifier id) {
 }
 ----
 
-* By default, Type 7 based identifiers are generated. You can add the `@IdentifierParam` annotation to explicitly specify one of Type 1, 6 or 7.
+* By default, Type 7 based identifiers are generated. You can add the `@IdentifierParam` annotation to explicitly specify one of Type 4, 6 or 7.
 +
 [source,java]
 ----
