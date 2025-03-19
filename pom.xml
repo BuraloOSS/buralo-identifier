@@ -20,7 +20,7 @@
 
     <groupId>com.buralotech.oss.identifier</groupId>
     <artifactId>buralotech-identifier</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Búraló Technologies Identifier</name>
@@ -312,7 +312,7 @@
         <url>https://github.com/BuraloOSS/buralo-identifier</url>
         <connection>scm:git:git@github.com:BuraloOSS/buralo-identifier.git</connection>
         <developerConnection>scm:git:git@github.com:BuraloOSS/buralo-identifier.git</developerConnection>
-        <tag>2.0.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <url>https://github.com/BuraloOSS/buralo-identifier</url>
