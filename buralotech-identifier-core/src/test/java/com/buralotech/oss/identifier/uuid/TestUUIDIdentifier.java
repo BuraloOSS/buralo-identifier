@@ -60,12 +60,12 @@ class TestUUIDIdentifier {
 
     private static Stream<Arguments> canCompareTwoEquivalentObjects() {
         return Stream.of(
-                arguments(GOOD_ID1, GOOD_ID1_STR, GOOD_ID1_HEX, GOOD_ID1_BIN),
-                arguments(GOOD_ID2, GOOD_ID2_STR, GOOD_ID2_HEX, GOOD_ID2_BIN),
-                arguments(GOOD_ID3, GOOD_ID3_STR, GOOD_ID3_HEX, GOOD_ID3_BIN),
-                arguments(GOOD_ID4, GOOD_ID4_STR, GOOD_ID4_HEX, GOOD_ID4_BIN),
-                arguments(GOOD_ID5, GOOD_ID5_STR, GOOD_ID5_HEX, GOOD_ID5_BIN),
-                arguments(GOOD_ID6, GOOD_ID6_STR, GOOD_ID6_HEX, GOOD_ID6_BIN));
+                arguments(GOOD_ID1, GOOD_ID1_STR, GOOD_ID1_HEX, GOOD_ID1_BIN, GOOD_ID1_UUID_STR),
+                arguments(GOOD_ID2, GOOD_ID2_STR, GOOD_ID2_HEX, GOOD_ID2_BIN, GOOD_ID2_UUID_STR),
+                arguments(GOOD_ID3, GOOD_ID3_STR, GOOD_ID3_HEX, GOOD_ID3_BIN, GOOD_ID3_UUID_STR),
+                arguments(GOOD_ID4, GOOD_ID4_STR, GOOD_ID4_HEX, GOOD_ID4_BIN, GOOD_ID4_UUID_STR),
+                arguments(GOOD_ID5, GOOD_ID5_STR, GOOD_ID5_HEX, GOOD_ID5_BIN, GOOD_ID5_UUID_STR),
+                arguments(GOOD_ID6, GOOD_ID6_STR, GOOD_ID6_HEX, GOOD_ID6_BIN, GOOD_ID6_UUID_STR));
     }
 
     @ParameterizedTest
@@ -73,12 +73,16 @@ class TestUUIDIdentifier {
     void canCompareTwoEquivalentObjects(final Identifier id,
                                         final String text,
                                         final String hex,
-                                        final byte[] binary) {
+                                        final byte[] binary,
+                                        final String uuidString) {
         assertThat(new UUIDIdentifier(text, binary)).isEqualTo(id);
         assertThat(id).isEqualTo(new UUIDIdentifier(text, binary));
         assertThat(new UUIDIdentifier(text, hex)).isEqualTo(id);
         assertThat(id).isEqualTo(new UUIDIdentifier(text, hex));
         assertThat(id).isEqualTo(text);
+        assertThat(id).isEqualTo(hex);
+        assertThat(id).isEqualTo(uuidString);
+        assertThat(id).isEqualTo(UUID.fromString(uuidString));
         assertThat(id).isEqualTo(binary);
     }
 
