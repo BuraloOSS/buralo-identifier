@@ -84,6 +84,8 @@ class TestUUIDIdentifier {
         assertThat(id).isEqualTo(uuidString);
         assertThat(id).isEqualTo(UUID.fromString(uuidString));
         assertThat(id).isEqualTo(binary);
+        assertThat(id).hasToString(text);
+        assertThat(id).hasSameHashCodeAs(new UUIDIdentifier(text, binary));
     }
 
     private static Stream<Arguments> cannotCompareDifferentObjects() {

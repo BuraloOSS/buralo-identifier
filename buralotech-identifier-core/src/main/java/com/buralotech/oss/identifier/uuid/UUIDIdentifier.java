@@ -79,9 +79,12 @@ public record UUIDIdentifier(String text, byte[] binary) implements Identifier {
         return switch (other) {
             case UUIDIdentifier that -> Arrays.equals(binary, that.binary);
             case byte[] that -> Arrays.equals(binary, that);
-            case String that when that.length() == 22 -> text.equals(that);
-            case String that when that.length() == 32 -> Arrays.equals(binary, HexFormat.of().parseHex(that));
-            case String that when that.length() == 36 -> Arrays.equals(binary, HexFormat.of().parseHex(that.replace("-", "")));
+            case String that -> switch (that.length()) {
+                case 22 -> text.equals(that);
+                case 32 -> Arrays.equals(binary, HexFormat.of().parseHex(that));
+                case 36 -> Arrays.equals(binary, HexFormat.of().parseHex(that.replace("-", "")));
+                default -> false;
+            };
             case UUID that -> Arrays.equals(binary, UUIDUtil.asByteArray(that));
             default -> false;
         };
