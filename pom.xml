@@ -53,6 +53,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <processDependencyManagementTransitive>false</processDependencyManagementTransitive>
         <maven.compiler.release>21</maven.compiler.release>
+        <maven.version.ignore>.+(\.|-)(M|CR|RC|alpha|beta).+</maven.version.ignore>
     </properties>
 
     <modules>
@@ -66,7 +67,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>3.5.0</version>
+                <version>3.5.4</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -83,12 +84,12 @@
             <dependency>
                 <groupId>net.jqwik</groupId>
                 <artifactId>jqwik-api</artifactId>
-                <version>1.9.2</version>
+                <version>1.9.3</version>
             </dependency>
             <dependency>
                 <groupId>net.jqwik</groupId>
                 <artifactId>jqwik-engine</artifactId>
-                <version>1.9.2</version>
+                <version>1.9.3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -98,22 +99,7 @@
             <plugins>
                 <plugin>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.5.0</version>
-                    <executions>
-                        <execution>
-                            <id>enforce-versions</id>
-                            <goals>
-                                <goal>enforce</goal>
-                            </goals>
-                            <configuration>
-                                <rules>
-                                    <requireMavenVersion>
-                                        <version>3.9.9</version>
-                                    </requireMavenVersion>
-                                </rules>
-                            </configuration>
-                        </execution>
-                    </executions>
+                    <version>3.6.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -176,6 +162,21 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.9.10</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -343,13 +344,5 @@
         <url>https://github.com/BuraloOSS/buralo-identifier/issues</url>
         <system>GitHub</system>
     </issueManagement>
-
-    <repositories>
-        <repository>
-            <id>repository.spring.milestone</id>
-            <name>Spring Milestone Repository</name>
-            <url>https://repo.spring.io/milestone</url>
-        </repository>
-    </repositories>
 
 </project>
