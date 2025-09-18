@@ -53,7 +53,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <processDependencyManagementTransitive>false</processDependencyManagementTransitive>
         <maven.compiler.release>21</maven.compiler.release>
-        <maven.version.ignore>^.+[-\.](M|RC|CR|alpha|beta|legacy).*$</maven.version.ignore>
+        <maven.version.ignore>^(?i).+[-\.](M|CR|RC|alpha|beta|legacy).*$</maven.version.ignore>
     </properties>
 
     <modules>
