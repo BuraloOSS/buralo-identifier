@@ -93,7 +93,6 @@ public class IdentifierArbitraryProvider implements ArbitraryProvider {
         return switch (version) {
             case 4 -> V4;
             case 6 -> V6;
-            case 7 -> V7;
             default -> V7;
         };
     }
