@@ -19,6 +19,8 @@ package com.buralotech.oss.identifier.spring;
 import com.buralotech.oss.identifier.api.Identifier;
 import com.buralotech.oss.identifier.api.IdentifierService;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 /**
  * Used to bind/inject identifiers in their text representation as identifiers objects.
@@ -45,8 +47,9 @@ public class IdentifierConverter implements Converter<String, Identifier> {
      * @param source The textual representation of the identifier.
      * @return The identifier object.
      */
+    @Nullable
     @Override
-    public Identifier convert(final String source) {
+    public Identifier convert(@NonNull final String source) {
         return identifierService.fromText(source);
     }
 }
