@@ -18,12 +18,12 @@ package com.buralotech.oss.identifier.spring;
 
 import com.buralotech.oss.identifier.api.IdentifierService;
 import com.buralotech.oss.identifier.uuid.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * Spring auto-configuration for identifier generation.
@@ -78,8 +78,7 @@ public class IdentifierConfig {
      */
     @Bean
     @ConditionalOnClass(ObjectMapper.class)
-    Jackson2ObjectMapperBuilderCustomizer identifierJacksonCustomizer(final IdentifierService identifierService) {
-        return jacksonObjectMapperBuilder -> jacksonObjectMapperBuilder
-                .modulesToInstall(modules -> modules.add(new IdentifierJacksonModule(identifierService)));
+    JsonMapperBuilderCustomizer identifierJacksonCustomizer(final IdentifierService identifierService) {
+        return builder -> builder.addModule(new IdentifierJacksonModule(identifierService));
     }
 }
