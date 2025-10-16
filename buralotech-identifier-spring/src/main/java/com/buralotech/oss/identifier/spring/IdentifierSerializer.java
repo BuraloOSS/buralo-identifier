@@ -17,30 +17,26 @@
 package com.buralotech.oss.identifier.spring;
 
 import com.buralotech.oss.identifier.api.Identifier;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-
-import java.io.IOException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ValueSerializer;
 
 /**
  * Serialize an {@link Identifier} value to JSON.
  */
-public class IdentifierSerializer extends JsonSerializer<Identifier> {
+public class IdentifierSerializer extends ValueSerializer<Identifier> {
 
     /**
      * Serialize a non-null {@link Identifier value} as a JSON string.
      *
      * @param identifier         The identifier value to serialize.
      * @param jsonGenerator      Used to output the JSON.
-     * @param serializerProvider Ignored.
-     * @throws IOException If there was an error outputting the JSON.
+     * @param context Ignored.
      */
     @Override
     public void serialize(final Identifier identifier,
                           final JsonGenerator jsonGenerator,
-                          final SerializerProvider serializerProvider)
-            throws IOException {
+                          final SerializationContext context) {
         jsonGenerator.writeString(identifier.text());
     }
 }

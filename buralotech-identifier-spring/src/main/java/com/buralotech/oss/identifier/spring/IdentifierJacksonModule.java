@@ -18,7 +18,7 @@ package com.buralotech.oss.identifier.spring;
 
 import com.buralotech.oss.identifier.api.Identifier;
 import com.buralotech.oss.identifier.api.IdentifierService;
-import com.fasterxml.jackson.databind.module.SimpleModule;
+import tools.jackson.databind.module.SimpleModule;
 
 /**
  * Jackson Module used to register the serializer and deserializers.
