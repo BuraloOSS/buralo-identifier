@@ -1,7 +1,7 @@
 # Enable auto-env through the sdkman_auto_env config
 # Add key=value pairs of SDKs to use below
 java=25.0.4-tem
-maven=3.9.16
+maven=4.0.0-rc-6
 springboot=4.1.0
 micronaut=5.1.0
 quarkus=3.38.0
