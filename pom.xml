@@ -14,9 +14,7 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 http://maven.apache.org/xsd/maven-4.1.0.xsd">
 
     <groupId>com.buralotech.oss.identifier</groupId>
     <artifactId>buralotech-identifier</artifactId>
@@ -55,12 +53,6 @@
         <maven.compiler.release>25</maven.compiler.release>
         <maven.version.ignore>^(?i).+[-\.](M|CR|RC|alpha|beta|legacy).*$</maven.version.ignore>
     </properties>
-
-    <modules>
-        <module>buralotech-identifier-core</module>
-        <module>buralotech-identifier-jqwik</module>
-        <module>buralotech-identifier-spring</module>
-    </modules>
 
     <dependencyManagement>
         <dependencies>
@@ -171,7 +163,7 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>3.9.12</version>
+                                    <version>4.0.0-rc-5</version>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
                                     <version>25</version>
