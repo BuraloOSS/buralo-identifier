@@ -8,7 +8,7 @@ Generate domain object identifiers from UUIDs that are globally unique and sorta
 
 * Versions 2.0.x & 2.1.x: Java 21
 
-* Versions 2.2.x -- Java 25
+* Versions 2.2.x & 3.0.x -- Java 25
 
 == Getting Started without Spring Boot
 
@@ -47,7 +47,7 @@ The following delegates are available:
 <dependency>
     <groupId>com.buralotech.oss.identifier</groupId>
     <artifactId>buralotech-identifier-core</artifactId>
-    <version>2.2.0</version>
+    <version>3.0.0</version>
 </dependency>
 ----
 +
@@ -56,7 +56,7 @@ The following delegates are available:
 <dependency>
     <groupId>com.buralotech.oss.identifier</groupId>
     <artifactId>buralotech-identifier-spring</artifactId>
-    <version>2.2.0</version>
+    <version>3.0.0</version>
 </dependency>
 ----
 
@@ -144,7 +144,7 @@ Integration with the https://jqwik.net/[jqwik] property based testing framework 
 <dependency>
     <groupId>com.buralotech.oss.identifier</groupId>
     <artifactId>buralotech-identifier-jqwik</artifactId>
-    <version>2.2.0</version>
+    <version>3.0.0</version>
     <scope>test</scope>
 </dependency>
 ----
