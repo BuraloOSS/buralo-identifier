@@ -2,4 +2,4 @@
 # Add key=value pairs of SDKs to use below
 java=25.0.1-tem
 maven=3.9.11
-springboot=3.5.8
+springboot=4.0.0

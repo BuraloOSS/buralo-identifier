@@ -22,7 +22,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 import java.util.stream.Stream;
@@ -55,7 +55,7 @@ class IdentifierConfigTest {
                     assertThat(context).hasSingleBean(UUIDIdentifierService.class);
                     assertThat(context).hasSingleBean(UUIDVersionDelegate.class);
                     assertThat(context).hasSingleBean(generatorClass);
-                    assertThat(context).hasSingleBean(Jackson2ObjectMapperBuilderCustomizer.class);
+                    assertThat(context).hasSingleBean(JsonMapperBuilderCustomizer.class);
                 });
     }
 }

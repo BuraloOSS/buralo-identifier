@@ -17,8 +17,8 @@
 package com.buralotech.oss.identifier.spring;
 
 import com.buralotech.oss.identifier.api.IdentifierService;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.KeyDeserializer;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.KeyDeserializer;
 
 /**
  * Deserializes map keys that are identifier types.

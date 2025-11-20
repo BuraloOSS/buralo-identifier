@@ -20,13 +20,14 @@ import com.buralotech.oss.identifier.api.Identifier;
 import com.buralotech.oss.identifier.uuid.UUIDIdentifier;
 import com.buralotech.oss.identifier.uuid.UUIDIdentifierService;
 import com.buralotech.oss.identifier.uuid.UUIDVersion7Delegate;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.util.*;
@@ -37,7 +38,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class IdentifierJacksonTest {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private ObjectMapper objectMapper;
 
     private static final String GOOD_ID1_STR = "-Tk3zAmZShTpkXSCMLOF2k";
 
@@ -54,7 +55,7 @@ class IdentifierJacksonTest {
     @BeforeEach
     void setup() {
         final var identifierService = new UUIDIdentifierService(new UUIDVersion7Delegate());
-        objectMapper.registerModule(new IdentifierJacksonModule(identifierService));
+        objectMapper = JsonMapper.builder().addModule(new IdentifierJacksonModule(identifierService)).build();
     }
 
     private static Stream<Arguments> writeValue() {
