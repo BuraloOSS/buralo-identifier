@@ -47,7 +47,7 @@ The following delegates are available:
 <dependency>
     <groupId>com.buralotech.oss.identifier</groupId>
     <artifactId>buralotech-identifier-core</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
 </dependency>
 ----
 +
@@ -56,7 +56,7 @@ The following delegates are available:
 <dependency>
     <groupId>com.buralotech.oss.identifier</groupId>
     <artifactId>buralotech-identifier-spring</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
 </dependency>
 ----
 
@@ -144,7 +144,7 @@ Integration with the https://jqwik.net/[jqwik] property based testing framework 
 <dependency>
     <groupId>com.buralotech.oss.identifier</groupId>
     <artifactId>buralotech-identifier-jqwik</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
     <scope>test</scope>
 </dependency>
 ----
