@@ -23,8 +23,6 @@ import tools.jackson.databind.DatabindException;
 import tools.jackson.databind.DeserializationContext;
 import tools.jackson.databind.ValueDeserializer;
 
-import java.io.IOException;
-
 /**
  * Deserializes map keys that are identifier types.
  */
