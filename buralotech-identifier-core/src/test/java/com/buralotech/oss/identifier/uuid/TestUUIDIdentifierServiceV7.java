@@ -62,6 +62,15 @@ class TestUUIDIdentifierServiceV7 {
     }
 
     @Test
+    void generatedIdentifiersSetIsConsistent() {
+        assertThat(identifierService.generateSet(17))
+                .allSatisfy(identifier -> {
+                    assertThat(identifierService.fromBinary(identifier.binary())).isEqualTo(identifier);
+                    assertThat(identifierService.fromText(identifier.text())).isEqualTo(identifier);
+                });
+    }
+
+    @Test
     void generatedIdentifiersStreamIsConsistent() {
         assertThat(identifierService.generateStream().limit(17))
                 .allSatisfy(identifier -> {

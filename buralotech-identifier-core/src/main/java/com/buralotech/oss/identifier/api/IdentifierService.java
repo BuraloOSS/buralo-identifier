@@ -52,6 +52,16 @@ public interface IdentifierService {
     }
 
     /**
+     * Generate a set of identifiers using an underlying UUID generator.
+     *
+     * @param n The number of identifiers to generate.
+     * @return The set of identifiers.
+     */
+    default Set<Identifier> generateSet(int n) {
+        return generateStream().limit(n).collect(toUnmodifiableSet());
+    }
+
+    /**
      * Generate a stream of identifiers using an underlying UUID generator.
      *
      * @return The list of identifiers.
