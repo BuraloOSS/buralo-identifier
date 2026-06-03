@@ -68,7 +68,7 @@ class IdentifierJacksonTest {
 
     @ParameterizedTest
     @MethodSource
-    void writeValue(final Identifier input, final String expected) throws Exception {
+    void writeValue(final Identifier input, final String expected) {
         assertThat(objectMapper.writeValueAsString(input)).isEqualTo(expected);
     }
 
@@ -90,7 +90,7 @@ class IdentifierJacksonTest {
 
     @ParameterizedTest
     @MethodSource
-    void readValue(final String input, final Identifier expected) throws IOException {
+    void readValue(final String input, final Identifier expected) {
         assertThat(objectMapper.readValue(input, Identifier.class)).isEqualTo(expected);
     }
 
@@ -101,21 +101,21 @@ class IdentifierJacksonTest {
     }
 
     @Test
-    void readValuesSet() throws Exception {
+    void readValuesSet() {
         assertThat(objectMapper.readValue("[\"-Tk3zAmZShTpkXSCMLOF2k\",\"-Tk3zAmZUTLWhGW7ABHnNF\"]", new TypeReference<Set<Identifier>>() {
         }))
                 .containsExactlyInAnyOrder(GOOD_ID1, GOOD_ID2);
     }
 
     @Test
-    void readValuesList() throws Exception {
+    void readValuesList() {
         assertThat(objectMapper.readValue("[\"-Tk3zAmZShTpkXSCMLOF2k\",\"-Tk3zAmZUTLWhGW7ABHnNF\"]", new TypeReference<List<Identifier>>() {
         }))
                 .containsExactlyInAnyOrder(GOOD_ID1, GOOD_ID2);
     }
 
     @Test
-    void readValuesMapUsingJavaType() throws Exception {
+    void readValuesMapUsingJavaType() {
         final var type = objectMapper.getTypeFactory().constructMapType(Map.class, Identifier.class, String.class);
         final Map<Identifier, String> actual = objectMapper.readValue("{\"-Tk3zAmZShTpkXSCMLOF2k\":\"1\",\"-Tk3zAmZUTLWhGW7ABHnNF\":\"2\"}", type);
         assertThat(actual).hasSize(2)
@@ -124,7 +124,7 @@ class IdentifierJacksonTest {
     }
 
     @Test
-    void readValuesMapUsingTypeReference() throws Exception {
+    void readValuesMapUsingTypeReference() {
         final TypeReference<Map<Identifier, String>> type = new TypeReference<>() {
         };
         assertThat(objectMapper.readValue("{\"-Tk3zAmZShTpkXSCMLOF2k\":\"1\",\"-Tk3zAmZUTLWhGW7ABHnNF\":\"2\"}", type))
