@@ -65,13 +65,6 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>4.0.6</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
                 <groupId>com.buralotech.oss.identifier</groupId>
                 <artifactId>buralotech-identifier-core</artifactId>
                 <version>${project.version}</version>
