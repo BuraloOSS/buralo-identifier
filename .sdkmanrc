@@ -3,3 +3,4 @@
 java=25.0.3-tem
 maven=3.9.16
 springboot=4.0.6
+micronaut=5.0.2
