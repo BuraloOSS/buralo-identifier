@@ -41,7 +41,7 @@ class TestUUIDIdentifierServiceV4 {
 
     private static final Random random = new SecureRandom();
 
-    private final IdentifierService identifierService = new UUIDIdentifierService(new UUIDVersion4Delegate());
+    private final IdentifierService identifierService =  UUIDIdentifierService.forVersion(UUIDIdentifierService.V4);
 
     @Test
     void generatedIdentifierIsConsistent() {
@@ -49,6 +49,7 @@ class TestUUIDIdentifierServiceV4 {
                 .satisfies(identifier -> {
                     assertThat(identifierService.fromBinary(identifier.binary())).isEqualTo(identifier);
                     assertThat(identifierService.fromText(identifier.text())).isEqualTo(identifier);
+                    assertThat(identifier.uuid().version()).isEqualTo(4);
                 });
     }
 
@@ -140,7 +141,6 @@ class TestUUIDIdentifierServiceV4 {
     }
 
     @ParameterizedTest
-    @NullSource
     @ValueSource(strings = {
             "",
             "3TnesPWMmyqTHniq6DPq0",
@@ -155,7 +155,6 @@ class TestUUIDIdentifierServiceV4 {
     }
 
     @ParameterizedTest
-    @NullSource
     @ValueSource(strings = {
             "",
             "0",
@@ -183,7 +182,6 @@ class TestUUIDIdentifierServiceV4 {
     }
 
     @ParameterizedTest
-    @NullSource
     @MethodSource
     void rejectBadBinaryRepresentation(final byte[] binary) {
         assertThatThrownBy(() -> identifierService.fromBinary(binary))
@@ -191,16 +189,14 @@ class TestUUIDIdentifierServiceV4 {
     }
 
     @ParameterizedTest
-    @NullSource
     @MethodSource("rejectBadBinaryRepresentation")
     void rejectBadBinaryRepresentationFromByteBuffer(final byte[] binary) {
-        assertThatThrownBy(() -> identifierService.fromByteBuffer(binary == null ? null : ByteBuffer.wrap(binary)))
+        assertThatThrownBy(() -> identifierService.fromByteBuffer(ByteBuffer.wrap(binary)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     private static Stream<Arguments> rejectBadBinaryRepresentationInTheMiddle() {
         return Stream.of(
-                arguments(2, null),
                 arguments(0, new byte[]{-2, -79, 33, -8, -95, 95, 79, -86, -79, 33, -8, -95, 95, 127, -86}),
                 arguments(1, new byte[]{-2, -79, 33, -8, -95, 95, 79, -86, -79, 33, -8, -95, 95, 127, -86, 77}),
                 arguments(4, new byte[]{0, 0, 0, 0, 30, -8, 114, 14, -98, 88, 96, -28, -113, -105, 49, -119, 121, -87, -63, 5, 0, 0, 0, 0}),
@@ -277,7 +273,7 @@ class TestUUIDIdentifierServiceV4 {
         return Stream.of(
                 arguments(List.of(GOOD_ID1, GOOD_ID2), List.of(GOOD_ID1_STR, GOOD_ID2_STR)),
                 arguments(List.of(), List.of()),
-                arguments(null, null)
+                arguments(null, List.of())
         );
     }
 
@@ -292,7 +288,7 @@ class TestUUIDIdentifierServiceV4 {
         return Stream.of(
                 arguments(List.of(GOOD_ID1, GOOD_ID2), List.of(GOOD_ID1_BIN, GOOD_ID2_BIN)),
                 arguments(List.of(), List.of()),
-                arguments(null, null)
+                arguments(null, List.of())
         );
     }
 
@@ -337,7 +333,7 @@ class TestUUIDIdentifierServiceV4 {
         return Stream.of(
                 arguments(Set.of(GOOD_ID1, GOOD_ID2), Set.of(GOOD_ID1_STR, GOOD_ID2_STR)),
                 arguments(Set.of(), Set.of()),
-                arguments(null, null)
+                arguments(null, Set.of())
         );
     }
 
@@ -352,7 +348,7 @@ class TestUUIDIdentifierServiceV4 {
         return Stream.of(
                 arguments(Set.of(GOOD_ID1, GOOD_ID2), Set.of(GOOD_ID1_BIN, GOOD_ID2_BIN)),
                 arguments(Set.of(), Set.of()),
-                arguments(null, null)
+                arguments(null, Set.of())
         );
     }
 
@@ -433,7 +429,7 @@ class TestUUIDIdentifierServiceV4 {
         return Stream.of(
                 arguments(Map.of(GOOD_ID1, obj1, GOOD_ID2, obj2), Map.of(GOOD_ID1_STR, obj1, GOOD_ID2_STR, obj2)),
                 arguments(Map.of(), Map.of()),
-                arguments(null, null)
+                arguments(null, Map.of())
         );
     }
 
@@ -450,7 +446,7 @@ class TestUUIDIdentifierServiceV4 {
         return Stream.of(
                 arguments(Map.of(GOOD_ID1, obj1, GOOD_ID2, obj2), Map.of(GOOD_ID1_BIN, obj1, GOOD_ID2_BIN, obj2)),
                 arguments(Map.of(), Map.of()),
-                arguments(null, null)
+                arguments(null, Map.of())
         );
     }
 

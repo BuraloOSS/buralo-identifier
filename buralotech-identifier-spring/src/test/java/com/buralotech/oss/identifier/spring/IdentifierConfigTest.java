@@ -37,24 +37,30 @@ class IdentifierConfigTest {
 
     private static Stream<Arguments> verifyBeans() {
         return Stream.of(
-                arguments("v4", UUIDVersion4Delegate.class),
-                arguments("v6", UUIDVersion6Delegate.class),
-                arguments("v7", UUIDVersion7Delegate.class)
+                arguments("v4", 4),
+                arguments("v6", 6),
+                arguments("v7", 7),
+                arguments("", 7),
+                arguments(null, 7)
         );
     }
 
     @ParameterizedTest
     @MethodSource
     void verifyBeans(final String generatorVersion,
-                     final Class<UUIDVersionDelegate> generatorClass) {
-        contextRunner
-                .withPropertyValues("buralotech.identifier.generator=" + generatorVersion)
+                     final int uuidVersion) {
+        (generatorVersion == null
+                ? contextRunner
+                : contextRunner.withPropertyValues("buralotech.identifier.generator=" + generatorVersion))
                 .run(context -> {
                     assertThat(context).hasSingleBean(IdentifierService.class);
                     assertThat(context).hasSingleBean(IdentifierConverter.class);
                     assertThat(context).hasSingleBean(UUIDIdentifierService.class);
-                    assertThat(context).hasSingleBean(UUIDVersionDelegate.class);
-                    assertThat(context).hasSingleBean(generatorClass);
+                    assertThat(context).getBean(UUIDIdentifierService.class)
+                            .satisfies(identifierService -> {
+                                final var id = identifierService.generate();
+                                assertThat(id.uuid().version()).isEqualTo(uuidVersion);
+                            });
                     assertThat(context).hasSingleBean(JsonMapperBuilderCustomizer.class);
                 });
     }

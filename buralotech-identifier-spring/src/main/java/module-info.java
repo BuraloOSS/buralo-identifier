@@ -5,6 +5,8 @@ module buralotech.identifier.spring {
     requires buralotech.identifier.core;
     requires spring.boot.jackson;
     requires tools.jackson.databind;
+    requires org.jspecify;
+    requires spring.boot;
     exports com.buralotech.oss.identifier.spring;
     opens com.buralotech.oss.identifier.spring to spring.core;
 }

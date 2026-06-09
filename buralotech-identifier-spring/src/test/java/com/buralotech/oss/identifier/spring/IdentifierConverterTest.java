@@ -94,7 +94,6 @@ class IdentifierConverterTest {
         final var version6Delegate = new UUIDVersion6Delegate();
         final var version7Delegate = new UUIDVersion7Delegate();
         return Stream.of(
-                arguments(version4Delegate, null),
                 arguments(version4Delegate, ""),
                 arguments(version4Delegate, " "),
                 arguments(version4Delegate, "zf3Wy94UIuel7UXWMryeI"),
@@ -105,7 +104,6 @@ class IdentifierConverterTest {
                 arguments(version4Delegate, GOOD_ID5_STR),
                 arguments(version4Delegate, GOOD_ID6_STR),
 
-                arguments(version6Delegate, null),
                 arguments(version6Delegate, ""),
                 arguments(version6Delegate, " "),
                 arguments(version6Delegate, "6jWm2dtNNDHE_n58TPb00"),
@@ -116,7 +114,6 @@ class IdentifierConverterTest {
                 arguments(version6Delegate, GOOD_ID5_STR),
                 arguments(version6Delegate, GOOD_ID6_STR),
 
-                arguments(version7Delegate, null),
                 arguments(version7Delegate, ""),
                 arguments(version7Delegate, " "),
                 arguments(version7Delegate, "-Tk3zAmZShTpkXSCMLOF2"),

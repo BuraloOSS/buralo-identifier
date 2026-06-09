@@ -45,8 +45,8 @@ public class IdentifierDeserializer extends ValueDeserializer<Identifier> {
     /**
      * Deserializes the JSON string containing the textual representation of an identifier.
      *
-     * @param jsonParser             Parser used for reading JSON content.
-     * @param ctxt The deserialization context (ignored).
+     * @param jsonParser Parser used for reading JSON content.
+     * @param ctxt       The deserialization context (ignored).
      * @return The identifier.
      */
     @Override
@@ -54,7 +54,7 @@ public class IdentifierDeserializer extends ValueDeserializer<Identifier> {
                                   final DeserializationContext ctxt) {
         final var text = jsonParser.readValueAs(String.class);
         try {
-            return text == null ? null : identifierService.fromText(text);
+            return identifierService.fromText(text);
         } catch (final IllegalArgumentException e) {
             throw DatabindException.from(jsonParser, "Could not deserialize identifier", e);
         }

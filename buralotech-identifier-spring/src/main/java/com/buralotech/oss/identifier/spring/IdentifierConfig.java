@@ -19,7 +19,7 @@ package com.buralotech.oss.identifier.spring;
 import com.buralotech.oss.identifier.api.IdentifierService;
 import com.buralotech.oss.identifier.uuid.*;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +29,7 @@ import tools.jackson.databind.ObjectMapper;
  * Spring auto-configuration for identifier generation.
  */
 @Configuration
+@EnableConfigurationProperties(IdentifierConfigProperties.class)
 public class IdentifierConfig {
 
     /**
@@ -37,8 +38,8 @@ public class IdentifierConfig {
      * @return The identifier service bean.
      */
     @Bean
-    IdentifierService identifierService(final UUIDVersionDelegate delegate) {
-        return new UUIDIdentifierService(delegate);
+    IdentifierService identifierService(final IdentifierConfigProperties properties) {
+        return UUIDIdentifierService.forVersion(properties.generator());
     }
 
     /**
@@ -49,24 +50,6 @@ public class IdentifierConfig {
     @Bean
     IdentifierConverter identifierConverter(final IdentifierService service) {
         return new IdentifierConverter(service);
-    }
-
-    @Bean
-    @ConditionalOnProperty(name = "buralotech.identifier.generator", matchIfMissing = true, havingValue = "v7")
-    UUIDVersionDelegate version7Delegate() {
-        return new UUIDVersion7Delegate();
-    }
-
-    @Bean
-    @ConditionalOnProperty(name = "buralotech.identifier.generator", havingValue = "v6")
-    UUIDVersionDelegate version6Delegate() {
-        return new UUIDVersion6Delegate();
-    }
-
-    @Bean
-    @ConditionalOnProperty(name = "buralotech.identifier.generator", havingValue = "v4")
-    UUIDVersionDelegate version4Delegate() {
-        return new UUIDVersion4Delegate();
     }
 
     /**

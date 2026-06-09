@@ -16,6 +16,8 @@
  */
 package com.buralotech.oss.identifier.api;
 
+import org.jspecify.annotations.Nullable;
+
 import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.time.temporal.Temporal;
@@ -111,7 +113,7 @@ public interface IdentifierService {
      * @param uuid The UUID string.
      * @return The identifier.
      */
-    Identifier fromUUID(final String uuid);
+    @Nullable Identifier fromUUID(@Nullable String uuid);
 
     /**
      * Create an identifier from a UUID.
@@ -119,7 +121,7 @@ public interface IdentifierService {
      * @param uuid The UUID.
      * @return The identifier.
      */
-    Identifier fromUUID(UUID uuid);
+    @Nullable Identifier fromUUID(@Nullable UUID uuid);
 
     /**
      * Decode an identifier using its hexadecimal representation.
@@ -129,9 +131,6 @@ public interface IdentifierService {
      * @throws IllegalArgumentException If the binary representation is not valid.
      */
     default Identifier fromBinary(final String hexString) {
-        if (hexString == null) {
-            throw new IllegalArgumentException("invalid binary representation of identifier");
-        }
         return fromBinary(HexFormat.of().parseHex(hexString));
     }
 
@@ -142,7 +141,7 @@ public interface IdentifierService {
      * @return The instant.
      * @throws UnsupportedOperationException If the operation is not supported.
      */
-    Instant toInstant(Identifier identifier);
+    @Nullable Instant toInstant(@Nullable Identifier identifier);
 
     /**
      * Generate a lower-bound identifier for temporal value that can be used in range queries.
@@ -175,7 +174,7 @@ public interface IdentifierService {
      * @return The identifiers.
      * @throws IllegalArgumentException If any of the input's text representation is not valid.
      */
-    default List<Identifier> fromText(final List<String> list) {
+    default List<Identifier> fromText(@Nullable final List<String> list) {
         return list == null
                 ? List.of()
                 : list.stream().map(this::fromText).toList();
@@ -188,7 +187,7 @@ public interface IdentifierService {
      * @return The identifiers.
      * @throws IllegalArgumentException If any of the input's binary representation is not valid.
      */
-    default List<Identifier> fromBinary(final List<byte[]> list) {
+    default List<Identifier> fromBinary(@Nullable final List<byte[]> list) {
         return list == null
                 ? List.of()
                 : list.stream().map(this::fromBinary).toList();
@@ -200,9 +199,9 @@ public interface IdentifierService {
      * @param list The list of identifiers.
      * @return The text representation of the identifiers.
      */
-    default List<String> toText(final List<Identifier> list) {
+    default List<String> toText(@Nullable final List<Identifier> list) {
         return list == null
-                ? null
+                ? List.of()
                 : list.stream().map(Identifier::text).toList();
     }
 
@@ -212,9 +211,9 @@ public interface IdentifierService {
      * @param list The list of identifiers.
      * @return The binary representation of the identifiers.
      */
-    default List<byte[]> toBinary(final List<Identifier> list) {
+    default List<byte[]> toBinary(@Nullable final List<Identifier> list) {
         return list == null
-                ? null
+                ? List.of()
                 : list.stream().map(Identifier::binary).toList();
     }
 
@@ -225,7 +224,7 @@ public interface IdentifierService {
      * @return The identifiers.
      * @throws IllegalArgumentException If any of the input's text representation is not valid.
      */
-    default Set<Identifier> fromText(final Set<String> set) {
+    default Set<Identifier> fromText(@Nullable final Set<String> set) {
         return set == null
                 ? Set.of()
                 : set.stream().map(this::fromText).collect(toUnmodifiableSet());
@@ -238,7 +237,7 @@ public interface IdentifierService {
      * @return The identifiers.
      * @throws IllegalArgumentException If any of the input's binary representation is not valid.
      */
-    default Set<Identifier> fromBinary(final Set<byte[]> set) {
+    default Set<Identifier> fromBinary(@Nullable final Set<byte[]> set) {
         return set == null
                 ? Set.of()
                 : set.stream().map(this::fromBinary).collect(toUnmodifiableSet());
@@ -250,9 +249,9 @@ public interface IdentifierService {
      * @param set The list of identifiers.
      * @return The text representation of the identifiers.
      */
-    default Set<String> toText(final Set<Identifier> set) {
+    default Set<String> toText(@Nullable final Set<Identifier> set) {
         return set == null
-                ? null
+                ? Set.of()
                 : set.stream().map(Identifier::text).collect(toUnmodifiableSet());
     }
 
@@ -262,9 +261,9 @@ public interface IdentifierService {
      * @param set The list of identifiers.
      * @return The binary representation of the identifiers.
      */
-    default Set<byte[]> toBinary(final Set<Identifier> set) {
+    default Set<byte[]> toBinary(@Nullable final Set<Identifier> set) {
         return set == null
-                ? null
+                ? Set.of()
                 : set.stream().map(Identifier::binary).collect(toUnmodifiableSet());
     }
 
@@ -275,7 +274,7 @@ public interface IdentifierService {
      * @return The map keyed by identifiers.
      * @throws IllegalArgumentException If any of the input's text representation is not valid.
      */
-    default <T> Map<Identifier, T> fromText(final Map<String, T> map) {
+    default <T> Map<Identifier, T> fromText(@Nullable final Map<String, T> map) {
         return map == null
                 ? Map.of()
                 : map.entrySet().stream().collect(toUnmodifiableMap(e -> fromText(e.getKey()), Map.Entry::getValue));
@@ -288,7 +287,7 @@ public interface IdentifierService {
      * @return The map keyed by identifiers.
      * @throws IllegalArgumentException If any of the input's binary representation is not valid.
      */
-    default <T> Map<Identifier, T> fromBinary(final Map<byte[], T> map) {
+    default <T> Map<Identifier, T> fromBinary(@Nullable final Map<byte[], T> map) {
         return map == null
                 ? Map.of()
                 : map.entrySet().stream().collect(toUnmodifiableMap(e -> fromBinary(e.getKey()), Map.Entry::getValue));
@@ -300,9 +299,9 @@ public interface IdentifierService {
      * @param map A map keyed by identifiers.
      * @return The map keyed by the text representation of the identifier.
      */
-    default <T> Map<String, T> toText(final Map<Identifier, T> map) {
+    default <T> Map<String, T> toText(@Nullable final Map<Identifier, T> map) {
         return map == null
-                ? null
+                ? Map.of()
                 : map.entrySet().stream().collect(toUnmodifiableMap(e -> e.getKey().text(), Map.Entry::getValue));
     }
 
@@ -312,9 +311,9 @@ public interface IdentifierService {
      * @param map A map keyed by identifiers.
      * @return The map keyed by the binary representation of the identifier.
      */
-    default <T> Map<byte[], T> toBinary(final Map<Identifier, T> map) {
+    default <T> Map<byte[], T> toBinary(@Nullable final Map<Identifier, T> map) {
         return map == null
-                ? null
+                ? Map.of()
                 : map.entrySet().stream().collect(toUnmodifiableMap(e -> e.getKey().binary(), Map.Entry::getValue));
     }
 }

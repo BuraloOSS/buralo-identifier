@@ -18,6 +18,7 @@ package com.buralotech.oss.identifier.uuid;
 
 import com.buralotech.oss.identifier.api.Identifier;
 import com.buralotech.oss.identifier.api.IdentifierService;
+import org.jspecify.annotations.Nullable;
 
 import java.nio.ByteBuffer;
 import java.time.*;
@@ -89,6 +90,21 @@ public final class UUIDIdentifierService implements IdentifierService {
     private static final long EPOCH_ADJ = 122192928000000000L;
 
     /**
+     * Version number for Type 4 UUIDs.
+     */
+    public static final String V4 = "v4";
+
+    /**
+     * Version number for Type 6 UUIDs.
+     */
+    public static final String V6 = "v6";
+
+    /**
+     * Version number for Type 7 UUIDs.
+     */
+    public static final String V7 = "v7";
+
+    /**
      * Delegate that encapsulates logic that is specific to the UUID format.
      */
     private final UUIDVersionDelegate delegate;
@@ -122,7 +138,7 @@ public final class UUIDIdentifierService implements IdentifierService {
      */
     @Override
     public Identifier fromText(final String text) {
-        if (text == null || !delegate.isValidText(text)) {
+        if (!delegate.isValidText(text)) {
             throw new IllegalArgumentException("invalid text representation of identifier");
         }
         final var binary = decode(text);
@@ -137,7 +153,7 @@ public final class UUIDIdentifierService implements IdentifierService {
      */
     @Override
     public Identifier fromBinary(final byte[] binary) {
-        if (binary == null || binary.length != 16 || !delegate.isValidBinary(binary, 0)) {
+        if (binary.length != 16 || !delegate.isValidBinary(binary, 0)) {
             throw new IllegalArgumentException("invalid binary representation of identifier");
         }
         return doFromBinary(binary);
@@ -153,7 +169,7 @@ public final class UUIDIdentifierService implements IdentifierService {
     @Override
     public Identifier fromBinary(final byte[] binary,
                                  final int offset) {
-        if (binary == null || binary.length < offset + 16 || !delegate.isValidBinary(binary, offset)) {
+        if (binary.length < offset + 16 || !delegate.isValidBinary(binary, offset)) {
             throw new IllegalArgumentException("invalid binary representation of identifier");
         }
         return doFromBinary(Arrays.copyOfRange(binary, offset, offset + 16));
@@ -167,7 +183,7 @@ public final class UUIDIdentifierService implements IdentifierService {
      */
     @Override
     public Identifier fromByteBuffer(final ByteBuffer buffer) {
-        if (buffer == null || buffer.remaining() < 16) {
+        if (buffer.remaining() < 16) {
             throw new IllegalArgumentException("invalid binary representation of identifier");
         }
         final var binary = new byte[16];
@@ -197,7 +213,7 @@ public final class UUIDIdentifierService implements IdentifierService {
      * @return The identifier.
      */
     @Override
-    public Identifier fromUUID(final String uuid) {
+    public @Nullable Identifier fromUUID(@Nullable final String uuid) {
         if (uuid == null) {
             return null;
         }
@@ -214,7 +230,7 @@ public final class UUIDIdentifierService implements IdentifierService {
      * @return The identifier.
      */
     @Override
-    public Identifier fromUUID(UUID uuid) {
+    public @Nullable Identifier fromUUID(@Nullable final UUID uuid) {
         if (uuid == null) {
             return null;
         }
@@ -228,7 +244,7 @@ public final class UUIDIdentifierService implements IdentifierService {
      * @return The 22 digit Base64 string.
      */
     private String encode(final byte[] bytes) {
-        assert bytes != null && bytes.length == 16;
+        assert bytes.length == 16;
         final var chars = new char[22];
         var readPos = 0;
         var writePos = 0;
@@ -282,7 +298,7 @@ public final class UUIDIdentifierService implements IdentifierService {
      * @return The 16 bytes.
      */
     private byte[] decode(final String str) {
-        assert str != null && str.length() == 22;
+        assert str.length() == 22;
         final var bytes = new byte[16];
         var i = 0;
         var j = 0;
@@ -353,7 +369,7 @@ public final class UUIDIdentifierService implements IdentifierService {
      * @return The instant.
      */
     @Override
-    public Instant toInstant(final Identifier identifier) {
+    public @Nullable Instant toInstant(@Nullable final Identifier identifier) {
         if (identifier == null) {
             return null;
         }
@@ -395,6 +411,24 @@ public final class UUIDIdentifierService implements IdentifierService {
         final var binary = delegate.fromTicks(toTicks(time, true), 0x8FFFFFFFFFFFFFFFL);
         final var text = encode(binary);
         return new UUIDIdentifier(text, binary);
+    }
+
+    /**
+     * Factory method to create an {@link UUIDIdentifierService} for the specified version.
+     *
+     * @param version Should be on of {@code "v4"}, {@code "v6"} or {@code "v7"}. {@code null} or empty strings will be interpreted as {@code "v7"}.
+     * @return An {@link UUIDIdentifierService}.
+     * @throws IllegalArgumentException If the version is invalid.
+     */
+    public static UUIDIdentifierService forVersion(@Nullable final String version) {
+        final var delegate = switch (version) {
+            case null -> new UUIDVersion7Delegate();
+            case V4 -> new UUIDVersion4Delegate();
+            case V6 -> new UUIDVersion6Delegate();
+            case "", V7 -> new UUIDVersion7Delegate();
+            default -> throw new IllegalArgumentException("Unsupported delegate version: " + version);
+        };
+        return new UUIDIdentifierService(delegate);
     }
 
     /**
