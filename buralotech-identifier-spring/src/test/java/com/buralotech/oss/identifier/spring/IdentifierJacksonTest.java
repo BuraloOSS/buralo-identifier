@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.boot.test.json.BasicJsonTester;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
@@ -37,6 +38,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class IdentifierJacksonTest {
+
+    public static final String СOMPLEX_JSON = """
+            {
+                "id": "-Tk3zAmZShTpkXSCMLOF2k",
+                "listOfIds": ["-Tk3zAmZShTpkXSCMLOF2k","-Tk3zAmZUTLWhGW7ABHnNF"],
+                "setOfIds": ["-Tk3zAmZUTLWhGW7ABHnNF","-Tk3zAmZShTpkXSCMLOF2k"],
+                "nestedRecords": {
+                    "-Tk3zAmZShTpkXSCMLOF2k": {
+                        "id": "-Tk3zAmZShTpkXSCMLOF2k",
+                        "name": "1"
+                    },
+                    "-Tk3zAmZUTLWhGW7ABHnNF": {
+                        "id": "-Tk3zAmZUTLWhGW7ABHnNF",
+                        "name": "2"
+                    }
+                }
+            }
+            """;
+    private final BasicJsonTester jsonTester = new BasicJsonTester(IdentifierJacksonTest.class);
 
     private ObjectMapper objectMapper;
 
@@ -131,5 +151,50 @@ class IdentifierJacksonTest {
                 .hasSize(2)
                 .containsEntry(GOOD_ID1, "1")
                 .containsEntry(GOOD_ID2, "2");
+    }
+
+    @Test
+    void writeComplexRecord() {
+        final var object = new ComplexRecord(
+                GOOD_ID1,
+                List.of(GOOD_ID1, GOOD_ID2),
+                Set.of(GOOD_ID1, GOOD_ID2),
+                Map.of(
+                        GOOD_ID1, new NestedRecord(GOOD_ID1, "1"),
+                        GOOD_ID2, new NestedRecord(GOOD_ID2, "2")));
+        final var json = jsonTester.from(objectMapper.writeValueAsBytes(object));
+        assertThat(json).isEqualToJson(СOMPLEX_JSON);
+    }
+
+    @Test
+    void readComplexRecord() {
+        assertThat(objectMapper.readValue(СOMPLEX_JSON, ComplexRecord.class))
+                .satisfies(object -> {
+                    assertThat(object.id()).isEqualTo(GOOD_ID1);
+                    assertThat(object.listOfIds()).containsExactly(GOOD_ID1, GOOD_ID2);
+                    assertThat(object.setOfIds()).containsExactly(GOOD_ID1, GOOD_ID2);
+                    assertThat(object.nestedRecords())
+                            .hasSize(2)
+                            .hasEntrySatisfying(GOOD_ID1, entry -> {
+                                assertThat(entry.id()).isEqualTo(GOOD_ID1);
+                                assertThat(entry.name()).isEqualTo("1");
+                            })
+                            .hasEntrySatisfying(GOOD_ID2, entry -> {
+                                assertThat(entry.id()).isEqualTo(GOOD_ID2);
+                                assertThat(entry.name()).isEqualTo("2");
+                            });
+                });
+    }
+
+    public record ComplexRecord(Identifier id,
+                                List<Identifier> listOfIds,
+                                Set<Identifier> setOfIds,
+                                Map<Identifier, NestedRecord> nestedRecords) {
+
+    }
+
+    public record NestedRecord(Identifier id,
+                               String name) {
+
     }
 }
