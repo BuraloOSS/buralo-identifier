@@ -72,7 +72,7 @@ public sealed abstract class AbstractUUIDVersionDelegate
     @Override
     public boolean isValidBinary(final byte[] binary,
                                  final int offset) {
-        if (binary == null || binary.length  < offset + 16) {
+        if (binary.length  < offset + 16) {
             return false;
         }
         final var version = (binary[offset + 6] & 0xf0) >> 4;
