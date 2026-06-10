@@ -30,7 +30,6 @@ import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -39,7 +38,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class IdentifierJacksonTest {
 
-    public static final String СOMPLEX_JSON = """
+    public static final String COMPLEX_JSON = """
             {
                 "id": "-Tk3zAmZShTpkXSCMLOF2k",
                 "listOfIds": ["-Tk3zAmZShTpkXSCMLOF2k","-Tk3zAmZUTLWhGW7ABHnNF"],
@@ -94,9 +93,9 @@ class IdentifierJacksonTest {
 
     private static Stream<Arguments> writeValues() {
         return Stream.of(
-                arguments(new TreeSet<>(List.of(GOOD_ID1, GOOD_ID2)), "[\"-Tk3zAmZShTpkXSCMLOF2k\",\"-Tk3zAmZUTLWhGW7ABHnNF\"]"),
-                arguments(List.of(GOOD_ID1, GOOD_ID2), "[\"-Tk3zAmZShTpkXSCMLOF2k\",\"-Tk3zAmZUTLWhGW7ABHnNF\"]"),
-                arguments(new TreeMap<>(Map.of(GOOD_ID1, "1", GOOD_ID2, "2")), "{\"-Tk3zAmZShTpkXSCMLOF2k\":\"1\",\"-Tk3zAmZUTLWhGW7ABHnNF\":\"2\"}")
+                arguments(new TreeSet<>(List.of(GOOD_ID1, GOOD_ID2)), "[\"" + GOOD_ID1_STR + "\",\"" + GOOD_ID2_STR + "\"]"),
+                arguments(List.of(GOOD_ID1, GOOD_ID2), "[\"" + GOOD_ID1_STR + "\",\"" + GOOD_ID2_STR + "\"]"),
+                arguments(new TreeMap<>(Map.of(GOOD_ID1, "1", GOOD_ID2, "2")), "{\"" + GOOD_ID1_STR + "\":\"1\",\"" + GOOD_ID2_STR + "\":\"2\"}")
         );
     }
 
@@ -116,20 +115,20 @@ class IdentifierJacksonTest {
 
     @ParameterizedTest
     @MethodSource
-    void writeValues(final Object input, final String expected) throws IOException {
+    void writeValues(final Object input, final String expected) {
         assertThat(objectMapper.writeValueAsString(input)).isEqualTo(expected);
     }
 
     @Test
     void readValuesSet() {
-        assertThat(objectMapper.readValue("[\"-Tk3zAmZShTpkXSCMLOF2k\",\"-Tk3zAmZUTLWhGW7ABHnNF\"]", new TypeReference<Set<Identifier>>() {
+        assertThat(objectMapper.readValue("[\"" + GOOD_ID1_STR + "\",\"" + GOOD_ID2_STR + "\"]", new TypeReference<Set<Identifier>>() {
         }))
                 .containsExactlyInAnyOrder(GOOD_ID1, GOOD_ID2);
     }
 
     @Test
     void readValuesList() {
-        assertThat(objectMapper.readValue("[\"-Tk3zAmZShTpkXSCMLOF2k\",\"-Tk3zAmZUTLWhGW7ABHnNF\"]", new TypeReference<List<Identifier>>() {
+        assertThat(objectMapper.readValue("[\"" + GOOD_ID1_STR + "\",\"" + GOOD_ID2_STR + "\"]", new TypeReference<List<Identifier>>() {
         }))
                 .containsExactlyInAnyOrder(GOOD_ID1, GOOD_ID2);
     }
@@ -137,7 +136,7 @@ class IdentifierJacksonTest {
     @Test
     void readValuesMapUsingJavaType() {
         final var type = objectMapper.getTypeFactory().constructMapType(Map.class, Identifier.class, String.class);
-        final Map<Identifier, String> actual = objectMapper.readValue("{\"-Tk3zAmZShTpkXSCMLOF2k\":\"1\",\"-Tk3zAmZUTLWhGW7ABHnNF\":\"2\"}", type);
+        final Map<Identifier, String> actual = objectMapper.readValue("{\"" + GOOD_ID1_STR + "\":\"1\",\"" + GOOD_ID2_STR + "\":\"2\"}", type);
         assertThat(actual).hasSize(2)
                 .containsEntry(GOOD_ID1, "1")
                 .containsEntry(GOOD_ID2, "2");
@@ -147,7 +146,7 @@ class IdentifierJacksonTest {
     void readValuesMapUsingTypeReference() {
         final TypeReference<Map<Identifier, String>> type = new TypeReference<>() {
         };
-        assertThat(objectMapper.readValue("{\"-Tk3zAmZShTpkXSCMLOF2k\":\"1\",\"-Tk3zAmZUTLWhGW7ABHnNF\":\"2\"}", type))
+        assertThat(objectMapper.readValue("{\"" + GOOD_ID1_STR + "\":\"1\",\"" + GOOD_ID2_STR + "\":\"2\"}", type))
                 .hasSize(2)
                 .containsEntry(GOOD_ID1, "1")
                 .containsEntry(GOOD_ID2, "2");
@@ -163,12 +162,12 @@ class IdentifierJacksonTest {
                         GOOD_ID1, new NestedRecord(GOOD_ID1, "1"),
                         GOOD_ID2, new NestedRecord(GOOD_ID2, "2")));
         final var json = jsonTester.from(objectMapper.writeValueAsBytes(object));
-        assertThat(json).isEqualToJson(СOMPLEX_JSON);
+        assertThat(json).isEqualToJson(COMPLEX_JSON);
     }
 
     @Test
     void readComplexRecord() {
-        assertThat(objectMapper.readValue(СOMPLEX_JSON, ComplexRecord.class))
+        assertThat(objectMapper.readValue(COMPLEX_JSON, ComplexRecord.class))
                 .satisfies(object -> {
                     assertThat(object.id()).isEqualTo(GOOD_ID1);
                     assertThat(object.listOfIds()).containsExactly(GOOD_ID1, GOOD_ID2);

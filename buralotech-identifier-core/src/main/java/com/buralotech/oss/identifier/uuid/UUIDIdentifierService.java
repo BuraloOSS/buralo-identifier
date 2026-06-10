@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 /**
  * Generate identifiers and parse binary and textual representations of identifiers. The generator uses either a Type 1
  * UUID generator and juggles the bits so that the binary representations can be ordered by generation time or a new
- * Type 6 UUID which is reordered in a similar way but is standardised. The textual representation is a modified
+ * Type 6 UUID which is reordered in a similar way but is standardized. The textual representation is a modified
  * URL-safe base 64 encoding that is also sortable.
  */
 public final class UUIDIdentifierService implements IdentifierService {
@@ -59,7 +59,7 @@ public final class UUIDIdentifierService implements IdentifierService {
     private static final int[] DECODING = new int[256];
 
     /*
-     * Initialise the array used for look-ups during decoding.
+     * Initialize the array used for look-ups during decoding.
      */
     static {
         // First mark all the values as invalid (-1)
@@ -264,7 +264,7 @@ public final class UUIDIdentifierService implements IdentifierService {
      * @param b2    The second byte.
      * @param b3    The third byte.
      * @param chars The output character array in which the base 64 digits will be stored.
-     * @param j     The position at whichthe first Base64 digit will be stored.
+     * @param j     The position at which the first Base64 digit will be stored.
      */
     private void encode3(final byte b1,
                          final byte b2,
@@ -282,7 +282,7 @@ public final class UUIDIdentifierService implements IdentifierService {
      *
      * @param b1    The input byte.
      * @param chars The output character array in which the base 64 digits will be stored.
-     * @param j     The position at whichthe first Base64 digit will be stored.
+     * @param j     The position at which the first Base64 digit will be stored.
      */
     private void encode1(final byte b1,
                          final char[] chars,

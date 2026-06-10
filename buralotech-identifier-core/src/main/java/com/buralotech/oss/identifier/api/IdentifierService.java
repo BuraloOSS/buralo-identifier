@@ -161,7 +161,7 @@ public interface IdentifierService {
      * @param time The temporal value ({@link java.time.Instant}, {@link java.time.LocalDate},
      *             {@link java.time.LocalDateTime}, {@link java.time.OffsetDateTime},
      *             {@link java.time.ZonedDateTime})
-     * @return A upper-bound identifier that can be used in a range query.
+     * @return An upper-bound identifier that can be used in a range query.
      * @throws UnsupportedOperationException If the operation is not supported for the identifier type.
      * @throws IllegalArgumentException      If the temporal type is not supported.
      */

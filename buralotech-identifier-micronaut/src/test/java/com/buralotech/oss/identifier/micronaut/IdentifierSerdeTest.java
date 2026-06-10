@@ -41,7 +41,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 @MicronautTest(startApplication = false)
 class IdentifierSerdeTest {
 
-    public static final String СOMPLEX_JSON = """
+    public static final String COMPLEX_JSON = """
             {
                 "id": "-Tk3zAmZShTpkXSCMLOF2k",
                 "listOfIds": ["-Tk3zAmZShTpkXSCMLOF2k","-Tk3zAmZUTLWhGW7ABHnNF"],
@@ -154,12 +154,12 @@ class IdentifierSerdeTest {
                 Map.of(
                         GOOD_ID1, new NestedRecord(GOOD_ID1, "1"),
                         GOOD_ID2, new NestedRecord(GOOD_ID2, "2")));
-        JSONAssert.assertEquals(objectMapper.writeValueAsString(object), СOMPLEX_JSON, false);
+        JSONAssert.assertEquals(objectMapper.writeValueAsString(object), COMPLEX_JSON, false);
     }
 
     @Test
     void readComplexRecord() throws IOException {
-        assertThat(objectMapper.readValue(СOMPLEX_JSON, ComplexRecord.class))
+        assertThat(objectMapper.readValue(COMPLEX_JSON, ComplexRecord.class))
                 .satisfies(object -> {
                     assertThat(object.id()).isEqualTo(GOOD_ID1);
                     assertThat(object.listOfIds()).containsExactly(GOOD_ID1, GOOD_ID2);

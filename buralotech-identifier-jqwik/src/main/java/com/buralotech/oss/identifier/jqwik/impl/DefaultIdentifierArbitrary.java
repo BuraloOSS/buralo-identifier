@@ -40,7 +40,7 @@ public class DefaultIdentifierArbitrary
     private final IdentifierService identifierService;
 
     /**
-     * Initialise the arbitrary.
+     * Initialize the arbitrary.
      *
      * @param delegate The identifier specific scheme.
      */

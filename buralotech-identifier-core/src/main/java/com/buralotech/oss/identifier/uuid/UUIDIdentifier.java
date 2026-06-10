@@ -33,7 +33,7 @@ public record UUIDIdentifier(String text, byte[] binary) implements Identifier {
 
 
     /**
-     * Alternative constructor that initialises the binary representation by parsing a hexadecimal string.
+     * Alternative constructor that initializes the binary representation by parsing a hexadecimal string.
      *
      * @param text The textual representation.
      * @param hex  The hexadecimal representation of the binary.

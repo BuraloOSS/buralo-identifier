@@ -35,7 +35,7 @@ public class IdentifierConverter implements TypeConverter<String, Identifier> {
     private final IdentifierService identifierService;
 
     /**
-     * Initialise the converter with the identifier service.
+     * Initialize the converter with the identifier service.
      *
      * @param identifierService The identifier service.
      */
