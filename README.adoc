@@ -8,7 +8,7 @@ Generate domain object identifiers from UUIDs that are globally unique and sorta
 
 == Java Compatibility
 
-* Versions 2.0.x & 2.1.x: Java 21
+* Versions 2.0.x & 2.1.x -- Java 21
 
 * Versions 2.2.x & 3.0.x -- Java 25
 
