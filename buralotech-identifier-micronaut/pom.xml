@@ -128,8 +128,6 @@
                         <arg>-Amicronaut.processing.group=com.buralotech.oss.identifier</arg>
                         <arg>-Amicronaut.processing.module=buralotech-identifier-micronaut</arg>
                     </compilerArgs>
-<!--                    <fork>true</fork>-->
-<!--                    <testCompilerArgument>&#45;&#45;add-reads buralotech.identifier.micronaut=java.compiler</testCompilerArgument>-->
                     <useModulePath>false</useModulePath>
                 </configuration>
             </plugin>
