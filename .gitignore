@@ -2,3 +2,5 @@
 target/
 .jqwik-database
 .DS_Store
+*.iml
+dependency-reduced-pom.xml
