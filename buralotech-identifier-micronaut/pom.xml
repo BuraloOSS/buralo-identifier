@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.buralotech.oss.identifier</groupId>
         <artifactId>buralotech-identifier</artifactId>
-        <version>3.1.0</version>
+        <version>3.1.1-SNAPSHOT</version>
     </parent>
 
     <properties>
