@@ -19,6 +19,8 @@ module buralotech.identifier.helidonmp {
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
     requires jakarta.cdi;
+    requires jakarta.json;
+    requires jakarta.json.bind;
     requires jakarta.ws.rs;
     requires microprofile.config.api;
     requires org.jspecify;
