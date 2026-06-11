@@ -59,6 +59,7 @@
     <modules>
         <module>buralotech-identifier-core</module>
         <module>buralotech-identifier-jqwik</module>
+        <module>buralotech-identifier-helidonmp</module>
         <module>buralotech-identifier-micronaut</module>
         <module>buralotech-identifier-quarkus</module>
         <module>buralotech-identifier-spring</module>
