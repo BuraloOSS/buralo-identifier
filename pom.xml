@@ -30,7 +30,14 @@
         representation.
     </description>
 
+    <url>https://github.com/BuraloOSS/buralo-identifier</url>
+
     <inceptionYear>2022</inceptionYear>
+
+    <organization>
+        <name>Buralo Technologies</name>
+        <url>https://www.buralotech.com</url>
+    </organization>
 
     <licenses>
         <license>
@@ -48,14 +55,6 @@
         </developer>
     </developers>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <processDependencyManagementTransitive>false</processDependencyManagementTransitive>
-        <maven.compiler.release>25</maven.compiler.release>
-        <maven.version.ignore>^(?i).+[-\.](M|CR|RC|alpha|beta|legacy).*$</maven.version.ignore>
-    </properties>
-
     <modules>
         <module>buralotech-identifier-core</module>
         <module>buralotech-identifier-jqwik</module>
@@ -65,17 +64,39 @@
         <module>buralotech-identifier-spring</module>
     </modules>
 
+    <!--    <distributionManagement>-->
+    <!--        <site>-->
+    <!--            <id>github</id>-->
+    <!--            <url>scm:git:git@github.com:BuraloOSS/buralo-identifier.git</url>-->
+    <!--        </site>-->
+    <!--    </distributionManagement>-->
+
+    <scm>
+        <url>https://github.com/BuraloOSS/buralo-identifier</url>
+        <connection>scm:git:git@github.com:BuraloOSS/buralo-identifier.git</connection>
+        <developerConnection>scm:git:git@github.com:BuraloOSS/buralo-identifier.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <issueManagement>
+        <url>https://github.com/BuraloOSS/buralo-identifier/issues</url>
+        <system>GitHub</system>
+    </issueManagement>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <processDependencyManagementTransitive>false</processDependencyManagementTransitive>
+        <maven.compiler.release>25</maven.compiler.release>
+        <maven.version.ignore>^(?i).+[-\.](M|CR|RC|alpha|beta|legacy).*$</maven.version.ignore>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>com.buralotech.oss.identifier</groupId>
                 <artifactId>buralotech-identifier-core</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jspecify</groupId>
-                <artifactId>jspecify</artifactId>
-                <version>1.0.0</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.uuid</groupId>
@@ -92,6 +113,11 @@
                 <artifactId>jqwik-engine</artifactId>
                 <version>1.10.1</version>
             </dependency>
+            <dependency>
+                <groupId>org.jspecify</groupId>
+                <artifactId>jspecify</artifactId>
+                <version>1.0.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -99,6 +125,7 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
                     <version>3.6.2</version>
                 </plugin>
@@ -290,6 +317,7 @@
                         </configuration>
                     </plugin>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
                         <version>3.2.8</version>
                         <executions>
@@ -311,6 +339,7 @@
                         </configuration>
                     </plugin>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
                         <version>3.4.0</version>
                         <executions>
@@ -323,6 +352,7 @@
                         </executions>
                     </plugin>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <version>3.12.0</version>
                         <executions>
@@ -338,31 +368,5 @@
             </build>
         </profile>
     </profiles>
-
-<!--    <distributionManagement>-->
-<!--        <site>-->
-<!--            <id>github</id>-->
-<!--            <url>scm:git:git@github.com:BuraloOSS/buralo-identifier.git</url>-->
-<!--        </site>-->
-<!--    </distributionManagement>-->
-
-    <scm>
-        <url>https://github.com/BuraloOSS/buralo-identifier</url>
-        <connection>scm:git:git@github.com:BuraloOSS/buralo-identifier.git</connection>
-        <developerConnection>scm:git:git@github.com:BuraloOSS/buralo-identifier.git</developerConnection>
-        <tag>HEAD</tag>
-    </scm>
-
-    <url>https://github.com/BuraloOSS/buralo-identifier</url>
-
-    <organization>
-        <name>Buralo Technologies</name>
-        <url>https://www.buralotech.com</url>
-    </organization>
-
-    <issueManagement>
-        <url>https://github.com/BuraloOSS/buralo-identifier/issues</url>
-        <system>GitHub</system>
-    </issueManagement>
 
 </project>

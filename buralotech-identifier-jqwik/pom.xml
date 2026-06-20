@@ -28,6 +28,18 @@
 
     <name>Búraló Technologies Identifier Jqwik</name>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-bom</artifactId>
+                <version>3.27.7</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>com.buralotech.oss.identifier</groupId>
@@ -48,17 +60,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.assertj</groupId>
-                <artifactId>assertj-bom</artifactId>
-                <version>3.27.7</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
 </project>
