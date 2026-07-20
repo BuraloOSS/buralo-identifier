@@ -33,7 +33,7 @@
             <dependency>
                 <groupId>io.quarkus.platform</groupId>
                 <artifactId>quarkus-bom</artifactId>
-                <version>3.37.2</version>
+                <version>3.37.3</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
