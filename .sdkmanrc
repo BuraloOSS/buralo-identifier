@@ -2,6 +2,6 @@
 # Add key=value pairs of SDKs to use below
 java=25.0.4-tem
 maven=3.9.16
-springboot=4.1.0
+springboot=4.1.1
 micronaut=5.1.1
 quarkus=3.38.3
