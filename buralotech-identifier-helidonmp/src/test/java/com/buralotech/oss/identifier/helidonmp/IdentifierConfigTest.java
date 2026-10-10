@@ -16,8 +16,6 @@
 package com.buralotech.oss.identifier.helidonmp;
 
 import com.buralotech.oss.identifier.api.IdentifierService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.helidon.microprofile.testing.AddBean;
 import io.helidon.microprofile.testing.AddConfig;
 import io.helidon.microprofile.testing.junit5.HelidonTest;
 import jakarta.enterprise.inject.Instance;
