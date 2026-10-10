@@ -16,6 +16,7 @@
  */
 package com.buralotech.oss.identifier.api;
 
+import io.netty.buffer.ByteBuf;
 import org.jspecify.annotations.Nullable;
 
 import java.nio.ByteBuffer;
@@ -106,6 +107,14 @@ public interface IdentifierService {
      * @return The identifier.
      */
     Identifier fromByteBuffer(ByteBuffer buffer);
+
+    /**
+     * Decode an identifier using its binary representation from a {@link ByteBuf}.
+     *
+     * @param buffer Contains the binary representation of the identifier.
+     * @return The identifier.
+     */
+    Identifier fromByteBuffer(ByteBuf buffer);
 
     /**
      * Create an identifier from a UUID string.

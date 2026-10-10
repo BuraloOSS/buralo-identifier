@@ -18,6 +18,7 @@ package com.buralotech.oss.identifier.uuid;
 
 import com.buralotech.oss.identifier.api.Identifier;
 import com.buralotech.oss.identifier.api.IdentifierService;
+import io.netty.buffer.ByteBuf;
 import org.jspecify.annotations.Nullable;
 
 import java.nio.ByteBuffer;
@@ -188,6 +189,25 @@ public final class UUIDIdentifierService implements IdentifierService {
         }
         final var binary = new byte[16];
         buffer.get(binary);
+        if (!delegate.isValidBinary(binary, 0)) {
+            throw new IllegalArgumentException("invalid binary representation of identifier");
+        }
+        return doFromBinary(binary);
+    }
+
+    /**
+     * Decode an identifier using its binary representation from a {@link ByteBuf}.
+     *
+     * @param buffer Contains the binary representation of the identifier.
+     * @return The identifier.
+     */
+    @Override
+    public Identifier fromByteBuffer(final ByteBuf buffer) {
+        if (buffer.readableBytes() < 16) {
+            throw new IllegalArgumentException("invalid binary representation of identifier");
+        }
+        final var binary = new byte[16];
+        buffer.readBytes(binary, 0, 16);
         if (!delegate.isValidBinary(binary, 0)) {
             throw new IllegalArgumentException("invalid binary representation of identifier");
         }

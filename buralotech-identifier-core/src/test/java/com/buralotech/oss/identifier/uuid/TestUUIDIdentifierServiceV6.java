@@ -19,6 +19,7 @@ package com.buralotech.oss.identifier.uuid;
 import com.buralotech.oss.identifier.api.Identifier;
 import com.buralotech.oss.identifier.api.IdentifierService;
 import com.fasterxml.uuid.Generators;
+import io.netty.buffer.Unpooled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -150,6 +151,16 @@ class TestUUIDIdentifierServiceV6 {
 
     @ParameterizedTest
     @MethodSource("goodIdentifiers")
+    void parseGoodBinaryRepresentationsInByteBuf(final String text, final String hexString, final byte[] binary) {
+        final var id = identifierService.fromByteBuffer(Unpooled.wrappedBuffer(binary));
+        assertThat(id).isEqualTo(new UUIDIdentifier(text, binary));
+        assertThat(id.text()).isEqualTo(text);
+        assertThat(id.hex()).isEqualTo(hexString);
+        assertThat(id.binary()).isEqualTo(binary);
+    }
+
+    @ParameterizedTest
+    @MethodSource("goodIdentifiers")
     void parseGoodHexRepresentations(final String text, final String hexString, final byte[] binary) {
         final var id = identifierService.fromBinary(hexString);
         assertThat(id).isEqualTo(new UUIDIdentifier(text, binary));
@@ -210,6 +221,13 @@ class TestUUIDIdentifierServiceV6 {
     @MethodSource("rejectBadBinaryRepresentation")
     void rejectBadBinaryRepresentationFromByteBuffer(final byte[] binary) {
         assertThatThrownBy(() -> identifierService.fromByteBuffer(ByteBuffer.wrap(binary)))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @ParameterizedTest
+    @MethodSource("rejectBadBinaryRepresentation")
+    void rejectBadBinaryRepresentationFromByteBuf(final byte[] binary) {
+        assertThatThrownBy(() -> identifierService.fromByteBuffer(Unpooled.wrappedBuffer(binary)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
