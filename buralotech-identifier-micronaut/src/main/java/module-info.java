@@ -22,7 +22,7 @@ module buralotech.identifier.micronaut {
     requires io.micronaut.serde.micronaut_serde_api;
     requires jakarta.inject;
     requires jakarta.annotation;
-    requires org.jspecify;
+    requires static org.jspecify;
     exports com.buralotech.oss.identifier.micronaut;
     opens com.buralotech.oss.identifier.micronaut to  io.micronaut.micronaut_context, io.micronaut.micronaut_core, io.micronaut.micronaut_inject, io.micronaut.serde.micronaut_serde_api;
     uses io.micronaut.inject.BeanDefinitionReference;

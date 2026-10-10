@@ -23,6 +23,6 @@ module buralotech.identifier.quarkus {
     requires jakarta.cdi;
     requires org.eclipse.microprofile.config;
     requires io.smallrye.config;
-    requires org.jspecify;
+    requires static org.jspecify;
     exports com.buralotech.oss.identifier.quarkus;
 }

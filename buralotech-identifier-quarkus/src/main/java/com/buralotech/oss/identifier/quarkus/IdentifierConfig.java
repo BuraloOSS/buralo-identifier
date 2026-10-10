@@ -20,6 +20,7 @@ import com.buralotech.oss.identifier.api.IdentifierService;
 import com.buralotech.oss.identifier.uuid.UUIDIdentifierService;
 import io.quarkus.jackson.ObjectMapperCustomizer;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 
 /**
@@ -33,8 +34,8 @@ public class IdentifierConfig {
      *
      * @return The identifier service bean.
      */
-    @ApplicationScoped
     @Produces
+    @Dependent
     IdentifierService identifierService(final IdentifierConfigProperties properties) {
         return UUIDIdentifierService.forVersion(properties.generator().orElse(null));
     }
@@ -45,8 +46,8 @@ public class IdentifierConfig {
      * @param identifierService The identifier service.
      * @return The customizer.
      */
-    @ApplicationScoped
     @Produces
+    @Dependent
     ObjectMapperCustomizer identifierJacksonCustomizer(final IdentifierService identifierService) {
         return objectMapper -> objectMapper.registerModule(new IdentifierJacksonModule(identifierService));
     }

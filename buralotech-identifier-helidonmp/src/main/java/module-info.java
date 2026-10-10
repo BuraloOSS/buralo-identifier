@@ -21,6 +21,6 @@ module buralotech.identifier.helidonmp {
     requires jakarta.cdi;
     requires jakarta.ws.rs;
     requires microprofile.config.api;
-    requires org.jspecify;
+    requires static org.jspecify;
     exports com.buralotech.oss.identifier.helidonmp;
 }

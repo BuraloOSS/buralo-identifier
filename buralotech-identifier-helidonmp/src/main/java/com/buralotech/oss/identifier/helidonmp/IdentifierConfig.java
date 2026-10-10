@@ -19,6 +19,7 @@ package com.buralotech.oss.identifier.helidonmp;
 import com.buralotech.oss.identifier.api.IdentifierService;
 import com.buralotech.oss.identifier.uuid.UUIDIdentifierService;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -35,7 +36,7 @@ public class IdentifierConfig {
      * @return The identifier service.
      */
     @Produces
-    @ApplicationScoped
+    @Dependent
     public IdentifierService identifierService(@ConfigProperty(name = "buralotech.identifier.generator", defaultValue = "v7") String generator) {
         return UUIDIdentifierService.forVersion(generator);
     }
