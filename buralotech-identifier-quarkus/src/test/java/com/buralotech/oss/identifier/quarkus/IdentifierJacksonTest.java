@@ -47,7 +47,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 @QuarkusComponentTest(IdentifierConfig.class)
 class IdentifierJacksonTest {
 
-    public static final String СOMPLEX_JSON = """
+    public static final String COMPLEX_JSON = """
             {
                 "id": "-Tk3zAmZShTpkXSCMLOF2k",
                 "listOfIds": ["-Tk3zAmZShTpkXSCMLOF2k","-Tk3zAmZUTLWhGW7ABHnNF"],
@@ -179,12 +179,12 @@ class IdentifierJacksonTest {
                         GOOD_ID1, new NestedRecord(GOOD_ID1, "1"),
                         GOOD_ID2, new NestedRecord(GOOD_ID2, "2")));
         final var json = objectMapper.writeValueAsString(object);
-        JSONAssert.assertEquals(СOMPLEX_JSON, json, false);
+        JSONAssert.assertEquals(COMPLEX_JSON, json, false);
     }
 
     @Test
     void readComplexRecord() throws JsonProcessingException {
-        assertThat(objectMapper.readValue(СOMPLEX_JSON, ComplexRecord.class))
+        assertThat(objectMapper.readValue(COMPLEX_JSON, ComplexRecord.class))
                 .satisfies(object -> {
                     assertThat(object.id()).isEqualTo(GOOD_ID1);
                     assertThat(object.listOfIds()).containsExactly(GOOD_ID1, GOOD_ID2);
