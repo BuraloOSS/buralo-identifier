@@ -106,12 +106,12 @@
             <dependency>
                 <groupId>net.jqwik</groupId>
                 <artifactId>jqwik-api</artifactId>
-                <version>1.10.1</version>
+                <version>1.10.2</version>
             </dependency>
             <dependency>
                 <groupId>net.jqwik</groupId>
                 <artifactId>jqwik-engine</artifactId>
-                <version>1.10.1</version>
+                <version>1.10.2</version>
             </dependency>
             <dependency>
                 <groupId>org.jspecify</groupId>
