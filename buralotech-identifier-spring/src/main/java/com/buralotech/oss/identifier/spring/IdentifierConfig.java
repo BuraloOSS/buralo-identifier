@@ -17,13 +17,22 @@
 package com.buralotech.oss.identifier.spring;
 
 import com.buralotech.oss.identifier.api.IdentifierService;
-import com.buralotech.oss.identifier.uuid.*;
+import com.buralotech.oss.identifier.spring.r2dbc.postgresql.IdentifierArrayCodec;
+import com.buralotech.oss.identifier.spring.r2dbc.postgresql.IdentifierCodec;
+import com.buralotech.oss.identifier.uuid.UUIDIdentifierService;
+import io.r2dbc.postgresql.extension.CodecRegistrar;
+import io.r2dbc.spi.Option;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
+import org.springframework.boot.r2dbc.autoconfigure.ConnectionFactoryOptionsBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import reactor.core.publisher.Mono;
 import tools.jackson.databind.ObjectMapper;
+
+import java.util.List;
 
 /**
  * Spring auto-configuration for identifier generation.
@@ -64,4 +73,20 @@ public class IdentifierConfig {
     JsonMapperBuilderCustomizer identifierJacksonCustomizer(final IdentifierService identifierService) {
         return builder -> builder.addModule(new IdentifierJacksonModule(identifierService));
     }
+
+    @Bean
+    @ConditionalOnProperty(name = "buralotech.identifier.postgresql.codecs.enabled", havingValue = "true")
+    @ConditionalOnClass(name = "io.r2dbc.postgresql.codec.Codec")
+    public ConnectionFactoryOptionsBuilderCustomizer connectionFactoryCustomizer(final IdentifierService identifierService) {
+        return builder ->
+                builder.option(
+                        Option.valueOf("extensions"),
+                        List.of((CodecRegistrar) (_, _, registry) -> {
+                            registry.addFirst(new IdentifierCodec(identifierService));
+                            registry.addFirst(new IdentifierArrayCodec(identifierService));
+                            return Mono.empty();
+                        })
+                );
+    }
+
 }
