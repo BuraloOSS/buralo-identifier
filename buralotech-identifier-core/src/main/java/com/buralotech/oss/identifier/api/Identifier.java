@@ -16,6 +16,9 @@
  */
 package com.buralotech.oss.identifier.api;
 
+import io.netty.buffer.ByteBuf;
+
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.HexFormat;
 import java.util.UUID;
@@ -61,6 +64,44 @@ public interface Identifier extends Comparable<Identifier> {
      * @return The UUID string.
      */
     String uuidString();
+
+    /**
+     * Copy the binary representation of the identifier to the byte array.
+     *
+     * @param buffer The target byte array.
+     * @param pos    The position to write at.
+     */
+    default void writeTo(final byte[] buffer, final int pos) {
+        System.arraycopy(binary(), 0, buffer, pos, 16);
+    }
+
+    /**
+     * Copy the binary representation of the identifier to the byte buffer.
+     *
+     * @param buffer The target byte buffer.
+     */
+    default void writeTo(final ByteBuffer buffer) {
+        buffer.put(binary());
+    }
+
+    /**
+     * Copy the binary representation of the identifier to the byte buffer.
+     *
+     * @param buffer The target byte buffer.
+     * @param pos    The position to write at.
+     */
+    default void writeTo(final ByteBuffer buffer, final int pos) {
+        buffer.put(pos, binary());
+    }
+
+    /**
+     * Copy the binary representation of the identifier to the byte buffer.
+     *
+     * @param buffer The target byte buffer.
+     */
+    default void writeTo(final ByteBuf buffer) {
+        buffer.writeBytes(binary());
+    }
 
     /**
      * Compare based on the binary representation.

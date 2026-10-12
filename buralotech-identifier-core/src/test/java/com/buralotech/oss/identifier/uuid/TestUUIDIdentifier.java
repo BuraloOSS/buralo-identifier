@@ -16,18 +16,77 @@
 package com.buralotech.oss.identifier.uuid;
 
 import com.buralotech.oss.identifier.api.Identifier;
+import io.netty.buffer.Unpooled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.nio.ByteBuffer;
+import java.util.HexFormat;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import static com.buralotech.oss.identifier.uuid.TestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static com.buralotech.oss.identifier.uuid.TestData.*;
 
 class TestUUIDIdentifier {
+
+    static Stream<Arguments> verifyWriteTo() {
+        return Stream.of(
+                arguments(List.of(GOOD_ID1), HexFormat.of().parseHex(GOOD_ID1_HEX)),
+                arguments(List.of(GOOD_ID1, GOOD_ID2), HexFormat.of().parseHex(GOOD_ID1_HEX + GOOD_ID2_HEX)),
+                arguments(List.of(GOOD_ID1, GOOD_ID2, GOOD_ID3), HexFormat.of().parseHex(GOOD_ID1_HEX + GOOD_ID2_HEX + GOOD_ID3_HEX)),
+                arguments(List.of(GOOD_ID1, GOOD_ID2, GOOD_ID3, GOOD_ID4), HexFormat.of().parseHex(GOOD_ID1_HEX + GOOD_ID2_HEX + GOOD_ID3_HEX + GOOD_ID4_HEX)),
+                arguments(List.of(GOOD_ID1, GOOD_ID2, GOOD_ID3, GOOD_ID4, GOOD_ID5), HexFormat.of().parseHex(GOOD_ID1_HEX + GOOD_ID2_HEX + GOOD_ID3_HEX + GOOD_ID4_HEX + GOOD_ID5_HEX)),
+                arguments(List.of(GOOD_ID1, GOOD_ID2, GOOD_ID3, GOOD_ID4, GOOD_ID5, GOOD_ID6), HexFormat.of().parseHex(GOOD_ID1_HEX + GOOD_ID2_HEX + GOOD_ID3_HEX + GOOD_ID4_HEX + GOOD_ID5_HEX + GOOD_ID6_HEX))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("verifyWriteTo")
+    void verifyWriteToBytes(final List<Identifier> ids,
+                            final byte[] expectedBytes) {
+        final var actualBytes = new byte[16 * ids.size()];
+        for (int i = 0; i < ids.size(); i++) {
+            ids.get(i).writeTo(actualBytes, 16 * i);
+        }
+        assertThat(actualBytes).containsExactly(expectedBytes);
+    }
+
+    @ParameterizedTest
+    @MethodSource("verifyWriteTo")
+    void verifyWriteToByteBuffer(final List<Identifier> ids,
+                                 final byte[] expectedBytes) {
+        final var actualBytes = ByteBuffer.allocate(16 * ids.size());
+        for (final var id : ids) {
+            id.writeTo(actualBytes);
+        }
+        assertThat(actualBytes.array()).containsExactly(expectedBytes);
+    }
+
+    @ParameterizedTest
+    @MethodSource("verifyWriteTo")
+    void verifyWriteToByteBufferUsingPos(final List<Identifier> ids,
+                                         final byte[] expectedBytes) {
+        final var actualBytes = ByteBuffer.allocate(16 * ids.size());
+        for (int i = 0; i < ids.size(); i++) {
+            ids.get(i).writeTo(actualBytes, i * 16);
+        }
+        assertThat(actualBytes.array()).containsExactly(expectedBytes);
+    }
+
+    @ParameterizedTest
+    @MethodSource("verifyWriteTo")
+    void verifyWriteToByteBuf(final List<Identifier> ids,
+                              final byte[] expectedBytes) {
+        final var actualBytes = Unpooled.buffer(16 * ids.size());
+        for (final var id : ids) {
+            id.writeTo(actualBytes);
+        }
+        assertThat(actualBytes.array()).containsExactly(expectedBytes);
+    }
 
 
     static Stream<Arguments> verifyConversions() {
