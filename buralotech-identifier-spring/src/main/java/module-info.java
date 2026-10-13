@@ -15,5 +15,7 @@ module buralotech.identifier.spring {
     requires static reactor.core;
     requires static spring.boot.r2dbc;
     exports com.buralotech.oss.identifier.spring;
+    exports com.buralotech.oss.identifier.spring.r2dbc.postgresql;
     opens com.buralotech.oss.identifier.spring to spring.core;
+    opens com.buralotech.oss.identifier.spring.r2dbc.postgresql to spring.core;
 }

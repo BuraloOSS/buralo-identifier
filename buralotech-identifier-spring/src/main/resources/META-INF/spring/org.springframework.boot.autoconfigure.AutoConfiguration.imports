@@ -13,3 +13,4 @@
 #  limitations under the License.
 
 com.buralotech.oss.identifier.spring.IdentifierConfig
+com.buralotech.oss.identifier.spring.r2dbc.postgresql.IdentifierCodecConfig
