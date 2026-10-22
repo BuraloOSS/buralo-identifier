@@ -1,5 +1,5 @@
 = Búraló Technologies Identifier
-:version: 3.1.1
+:version: 3.1.2
 :icons: font
 
 == Overview
@@ -10,7 +10,7 @@ Generate domain object identifiers from UUIDs that are globally unique and sorta
 
 * Versions 2.0.x & 2.1.x -- Java 21
 
-* Versions 2.2.x & 3.0.x -- Java 25
+* Versions 2.2.x & 3.x.x -- Java 25
 
 == Getting Started without Spring Boot
 
