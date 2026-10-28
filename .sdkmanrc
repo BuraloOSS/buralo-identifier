@@ -3,5 +3,5 @@
 java=25.0.4-tem
 maven=3.10.0
 springboot=4.1.2
-micronaut=5.2.3
+micronaut=5.2.4
 quarkus=3.40.1.1
