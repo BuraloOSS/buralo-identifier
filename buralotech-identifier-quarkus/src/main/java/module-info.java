@@ -24,5 +24,6 @@ module buralotech.identifier.quarkus {
     requires org.eclipse.microprofile.config;
     requires io.smallrye.config;
     requires static org.jspecify;
+    requires io.quarkus.core;
     exports com.buralotech.oss.identifier.quarkus;
 }

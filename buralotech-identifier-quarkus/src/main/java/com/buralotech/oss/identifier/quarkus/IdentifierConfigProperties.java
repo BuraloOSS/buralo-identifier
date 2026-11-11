@@ -16,6 +16,7 @@
  */
 package com.buralotech.oss.identifier.quarkus;
 
+import io.quarkus.runtime.annotations.StaticInitSafe;
 import io.smallrye.config.ConfigMapping;
 
 import java.util.Optional;
@@ -23,6 +24,7 @@ import java.util.Optional;
 /**
  * Accessor for the configuration properties for the library.
  */
+@StaticInitSafe
 @ConfigMapping(prefix = "buralotech.identifier")
 public interface IdentifierConfigProperties {
 
