@@ -18,17 +18,16 @@ package com.buralotech.oss.identifier.quarkus;
 
 import com.buralotech.oss.identifier.api.Identifier;
 import com.buralotech.oss.identifier.api.IdentifierService;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-
-import java.io.IOException;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DatabindException;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.ValueDeserializer;
 
 /**
  * Deserializes map keys that are identifier types.
  */
-public class IdentifierDeserializer extends StdDeserializer<Identifier> {
+public class IdentifierDeserializer extends ValueDeserializer<Identifier> {
 
     /**
      * Used to create the identifier from its textual representation.
@@ -41,7 +40,6 @@ public class IdentifierDeserializer extends StdDeserializer<Identifier> {
      * @param identifierService Used to create the identifier from its textual representation.
      */
     public IdentifierDeserializer(final IdentifierService identifierService) {
-        super(Identifier.class);
         this.identifierService = identifierService;
     }
 
@@ -55,12 +53,12 @@ public class IdentifierDeserializer extends StdDeserializer<Identifier> {
     @Override
     public Identifier deserialize(final JsonParser jsonParser,
                                   final DeserializationContext ctxt)
-            throws IOException {
+            throws JacksonException {
         final var text = jsonParser.readValueAs(String.class);
         try {
             return identifierService.fromText(text);
         } catch (final IllegalArgumentException e) {
-            throw new JsonMappingException(jsonParser, "Could not deserialize identifier", e);
+            throw DatabindException.from(jsonParser, "Could not deserialize identifier", e);
         }
     }
 }

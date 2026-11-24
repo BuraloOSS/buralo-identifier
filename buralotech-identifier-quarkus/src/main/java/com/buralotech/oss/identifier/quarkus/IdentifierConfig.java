@@ -18,7 +18,7 @@ package com.buralotech.oss.identifier.quarkus;
 
 import com.buralotech.oss.identifier.api.IdentifierService;
 import com.buralotech.oss.identifier.uuid.UUIDIdentifierService;
-import io.quarkus.jackson.ObjectMapperCustomizer;
+import io.quarkus.jackson.JsonMapperBuilderCustomizer;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 
@@ -47,7 +47,7 @@ public class IdentifierConfig {
      */
     @Produces
     @ApplicationScoped
-    ObjectMapperCustomizer identifierJacksonCustomizer(final IdentifierService identifierService) {
-        return objectMapper -> objectMapper.registerModule(new IdentifierJacksonModule(identifierService));
+    JsonMapperBuilderCustomizer identifierJacksonCustomizer(final IdentifierService identifierService) {
+        return objectMapper -> objectMapper.addModule(new IdentifierJacksonModule(identifierService));
     }
 }

@@ -16,15 +16,15 @@
  */
 package com.buralotech.oss.identifier.quarkus;
 
-import com.buralotech.oss.identifier.api.Identifier;
 import com.buralotech.oss.identifier.api.IdentifierService;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.deser.std.StdKeyDeserializer;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.KeyDeserializer;
 
 /**
  * Deserializes map keys that are identifier types.
  */
-public class IdentifierKeyDeserializer extends StdKeyDeserializer {
+public class IdentifierKeyDeserializer extends KeyDeserializer {
 
     /**
      * Used to create the identifier from its textual representation.
@@ -37,19 +37,19 @@ public class IdentifierKeyDeserializer extends StdKeyDeserializer {
      * @param identifierService Used to create the identifier from its textual representation.
      */
     public IdentifierKeyDeserializer(final IdentifierService identifierService) {
-        super(-1, Identifier.class);
         this.identifierService = identifierService;
     }
 
     /**
      * Deserialize a map key as an identifier.
      *
-     * @param key  The map key as string.
-     * @param ctxt The deserialization context. (ignored)
+     * @param key     The map key as string.
+     * @param context The deserialization context. (ignored)
      * @return The identifier.
      */
     @Override
-    public Object deserializeKey(final String key, final DeserializationContext ctxt) {
+    public Object deserializeKey(final String key,
+                                 final DeserializationContext context) throws JacksonException {
         return identifierService.fromText(key);
     }
 }

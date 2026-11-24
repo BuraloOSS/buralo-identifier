@@ -17,7 +17,7 @@
 package com.buralotech.oss.identifier.quarkus;
 
 import com.buralotech.oss.identifier.api.IdentifierService;
-import io.quarkus.jackson.ObjectMapperCustomizer;
+import io.quarkus.jackson.JsonMapperBuilderCustomizer;
 import io.quarkus.test.component.QuarkusComponentTest;
 import io.quarkus.test.component.TestConfigProperty;
 import jakarta.enterprise.inject.Instance;
@@ -74,7 +74,7 @@ class IdentifierBeanConfigTest {
     }
 
     @Test
-    void objectMapperCustomizerExists(final Instance<ObjectMapperCustomizer> objectMapperCustomizer) {
+    void objectMapperCustomizerExists(final Instance<JsonMapperBuilderCustomizer> objectMapperCustomizer) {
         assertThat(objectMapperCustomizer.isResolvable()).isTrue();
     }
 }

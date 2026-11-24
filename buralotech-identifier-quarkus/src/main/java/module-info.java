@@ -15,7 +15,7 @@
  *
  */
 module buralotech.identifier.quarkus {
-    requires com.fasterxml.jackson.databind;
+    requires tools.jackson.databind;
     requires buralotech.identifier.core;
     requires jakarta.ws.rs;
     requires quarkus.arc;

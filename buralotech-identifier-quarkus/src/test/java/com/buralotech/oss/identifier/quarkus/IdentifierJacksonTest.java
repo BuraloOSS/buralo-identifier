@@ -18,10 +18,7 @@ package com.buralotech.oss.identifier.quarkus;
 
 import com.buralotech.oss.identifier.api.Identifier;
 import com.buralotech.oss.identifier.uuid.UUIDIdentifier;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.quarkus.jackson.ObjectMapperCustomizer;
+import io.quarkus.jackson.JsonMapperBuilderCustomizer;
 import io.quarkus.test.component.QuarkusComponentTest;
 import io.quarkus.test.component.SkipInject;
 import jakarta.enterprise.inject.Instance;
@@ -33,6 +30,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.skyscreamer.jsonassert.JSONAssert;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.util.*;
@@ -78,15 +78,17 @@ class IdentifierJacksonTest {
     private static final Identifier GOOD_ID2 = new UUIDIdentifier(GOOD_ID2_STR, GOOD_ID2_BIN);
 
     @Inject
-    private Instance<ObjectMapperCustomizer> customizers;
+    private Instance<JsonMapperBuilderCustomizer> customizers;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private JsonMapper objectMapper;
 
     @BeforeEach
     void setup() {
+        final JsonMapper.Builder builder = JsonMapper.builder();
         for (var customizer : customizers) {
-            customizer.customize(objectMapper);
+            customizer.customize(builder);
         }
+        objectMapper = builder.build();
     }
 
     private static Stream<Arguments> writeValue() {
@@ -100,15 +102,15 @@ class IdentifierJacksonTest {
     @ParameterizedTest
     @MethodSource
     void writeValue(@SkipInject final Identifier input,
-                    @SkipInject final String expected) throws JsonProcessingException {
+                    @SkipInject final String expected) throws JacksonException {
         assertThat(objectMapper.writeValueAsString(input)).isEqualTo(expected);
     }
 
     private static Stream<Arguments> writeValues() {
         return Stream.of(
-                arguments(new TreeSet<>(List.of(GOOD_ID1, GOOD_ID2)), "[\""+GOOD_ID1_STR+"\",\""+GOOD_ID2_STR+"\"]"),
-                arguments(List.of(GOOD_ID1, GOOD_ID2), "[\""+GOOD_ID1_STR+"\",\""+GOOD_ID2_STR+"\"]"),
-                arguments(new TreeMap<>(Map.of(GOOD_ID1, "1", GOOD_ID2, "2")), "{\""+GOOD_ID1_STR+"\":\"1\",\""+GOOD_ID2_STR+"\":\"2\"}")
+                arguments(new TreeSet<>(List.of(GOOD_ID1, GOOD_ID2)), "[\"" + GOOD_ID1_STR + "\",\"" + GOOD_ID2_STR + "\"]"),
+                arguments(List.of(GOOD_ID1, GOOD_ID2), "[\"" + GOOD_ID1_STR + "\",\"" + GOOD_ID2_STR + "\"]"),
+                arguments(new TreeMap<>(Map.of(GOOD_ID1, "1", GOOD_ID2, "2")), "{\"" + GOOD_ID1_STR + "\":\"1\",\"" + GOOD_ID2_STR + "\":\"2\"}")
         );
     }
 
@@ -124,7 +126,7 @@ class IdentifierJacksonTest {
     @MethodSource
     void readValue(@SkipInject final String input,
                    @SkipInject final Identifier expected)
-            throws JsonProcessingException {
+            throws JacksonException {
         assertThat(objectMapper.readValue(input, Identifier.class)).isEqualTo(expected);
     }
 
@@ -137,30 +139,30 @@ class IdentifierJacksonTest {
     }
 
     @Test
-    void readValuesSet() throws JsonProcessingException {
-        assertThat(objectMapper.readValue("[\""+GOOD_ID1_STR+"\",\""+GOOD_ID2_STR+"\"]", new TypeReference<Set<Identifier>>() {
+    void readValuesSet() throws JacksonException {
+        assertThat(objectMapper.readValue("[\"" + GOOD_ID1_STR + "\",\"" + GOOD_ID2_STR + "\"]", new TypeReference<Set<Identifier>>() {
         }))
                 .containsExactlyInAnyOrder(GOOD_ID1, GOOD_ID2);
     }
 
     @Test
-    void readValuesList() throws JsonProcessingException {
-        assertThat(objectMapper.readValue("[\""+GOOD_ID1_STR+"\",\""+GOOD_ID2_STR+"\"]", new TypeReference<List<Identifier>>() {
+    void readValuesList() throws JacksonException {
+        assertThat(objectMapper.readValue("[\"" + GOOD_ID1_STR + "\",\"" + GOOD_ID2_STR + "\"]", new TypeReference<List<Identifier>>() {
         }))
                 .containsExactlyInAnyOrder(GOOD_ID1, GOOD_ID2);
     }
 
     @Test
-    void readValuesMapUsingJavaType() throws JsonProcessingException {
+    void readValuesMapUsingJavaType() throws JacksonException {
         final var type = objectMapper.getTypeFactory().constructMapType(Map.class, Identifier.class, String.class);
-        final Map<Identifier, String> actual = objectMapper.readValue("{\""+GOOD_ID1_STR+"\":\"1\",\""+GOOD_ID2_STR+"\":\"2\"}", type);
+        final Map<Identifier, String> actual = objectMapper.readValue("{\"" + GOOD_ID1_STR + "\":\"1\",\"" + GOOD_ID2_STR + "\":\"2\"}", type);
         assertThat(actual).hasSize(2)
                 .containsEntry(GOOD_ID1, "1")
                 .containsEntry(GOOD_ID2, "2");
     }
 
     @Test
-    void readValuesMapUsingTypeReference() throws JsonProcessingException {
+    void readValuesMapUsingTypeReference() throws JacksonException {
         final TypeReference<Map<Identifier, String>> type = new TypeReference<>() {
         };
         assertThat(objectMapper.readValue("{\"" + GOOD_ID1_STR + "\":\"1\",\"" + GOOD_ID2_STR + "\":\"2\"}", type))
@@ -170,7 +172,7 @@ class IdentifierJacksonTest {
     }
 
     @Test
-    void writeComplexRecord() throws JsonProcessingException, JSONException {
+    void writeComplexRecord() throws JacksonException, JSONException {
         final var object = new ComplexRecord(
                 GOOD_ID1,
                 List.of(GOOD_ID1, GOOD_ID2),
@@ -183,7 +185,7 @@ class IdentifierJacksonTest {
     }
 
     @Test
-    void readComplexRecord() throws JsonProcessingException {
+    void readComplexRecord() throws JacksonException {
         assertThat(objectMapper.readValue(COMPLEX_JSON, ComplexRecord.class))
                 .satisfies(object -> {
                     assertThat(object.id()).isEqualTo(GOOD_ID1);

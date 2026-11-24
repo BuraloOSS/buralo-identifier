@@ -17,45 +17,28 @@
 package com.buralotech.oss.identifier.quarkus;
 
 import com.buralotech.oss.identifier.api.Identifier;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-
-import java.io.IOException;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ValueSerializer;
 
 /**
  * Serialize an {@link Identifier} value to JSON.
  */
-public class IdentifierSerializer extends StdSerializer<Identifier> {
-
-    /**
-     * Default constructor.
-     */
-    public IdentifierSerializer() {
-        this(Identifier.class);
-    }
-
-    /**
-     * Parameterized constructor.
-     *
-     * @param clazz The class for the identifier type.
-     */
-    public IdentifierSerializer(final Class<Identifier> clazz) {
-        super(clazz);
-    }
+public class IdentifierSerializer extends ValueSerializer<Identifier> {
 
     /**
      * Serialize a non-null {@link Identifier value} as a JSON string.
      *
      * @param identifier    The identifier value to serialize.
      * @param jsonGenerator Used to output the JSON.
-     * @param provider      Ignored.
+     * @param context       Ignored.
      */
     @Override
     public void serialize(final Identifier identifier,
                           final JsonGenerator jsonGenerator,
-                          final SerializerProvider provider)
-            throws IOException {
+                          final SerializationContext context)
+            throws JacksonException {
         jsonGenerator.writeString(identifier.text());
     }
 }
